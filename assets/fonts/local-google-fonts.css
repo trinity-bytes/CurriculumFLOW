@@ -1,0 +1,87 @@
+/* Inter Regular */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: url("Inter_18pt-Regular.ttf") format("truetype");
+}
+/* Inter Medium */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  src: url("Inter_18pt-Medium.ttf") format("truetype");
+}
+/* Inter SemiBold */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  src: url("Inter_18pt-SemiBold.ttf") format("truetype");
+}
+/* Inter Bold */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  src: url("Inter_18pt-Bold.ttf") format("truetype");
+}
+/* Inter ExtraBold */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  src: url("Inter_18pt-ExtraBold.ttf") format("truetype");
+}
+
+/* Montserrat Regular */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  src: url("Montserrat-Regular.ttf") format("truetype");
+}
+/* Montserrat Medium (using Regular if Medium is not available, adjust if you have Montserrat-Medium.ttf) */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  src: url("Montserrat-Medium.ttf") format("truetype"); /* Updated to Montserrat-Medium.ttf */
+}
+/* Montserrat SemiBold (using Bold if SemiBold is not available, adjust if you have Montserrat-SemiBold.ttf) */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  src: url("Montserrat-SemiBold.ttf") format("truetype"); /* Updated to Montserrat-SemiBold.ttf */
+}
+/* Montserrat Bold */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  src: url("Montserrat-Bold.ttf") format("truetype");
+}
+/* Montserrat ExtraBold */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 800;
+  src: url("Montserrat-ExtraBold.ttf") format("truetype");
+}
+
+/* Italic variants - assuming you have them, e.g., Inter-Italic.ttf, Montserrat-Italic.ttf */
+/* Inter Italic */
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 400; /* Or specific weight for italic if available */
+  src: url("Inter_18pt-Italic.ttf") format("truetype");
+}
+/* Montserrat Italic */
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 400; /* Or specific weight for italic if available */
+  src: url("Montserrat-Italic.ttf") format("truetype");
+}

@@ -7,7 +7,7 @@
 CurriculumFlow es una aplicación web diseñada para instituciones educativas que necesitan gestionar, visualizar y optimizar planes de estudio considerando relaciones de prerrequisitos entre cursos.
 
 [![Licencia MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Version-1.0-green.svg)
+![Version](https://img.shields.io/badge/Version-2.0-green.svg)
 
 ## 📋 Descripción
 
@@ -28,18 +28,24 @@ Este proyecto nace como solución al problema de organización de mallas curricu
 - **Validación de consistencia** para detectar ciclos o conflictos
 - **Interfaz intuitiva** para consulta de información de cursos
 - **Diseño responsivo** que funciona en diferentes dispositivos
+- **Totalmente funcional offline** gracias a la localización de todas las dependencias (CSS, JS, fuentes).
 
 ## 🔧 Tecnologías utilizadas
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Visualización de datos**: JavaScript puro para renderizado de tablas y relaciones
-- **Estilos**: CSS personalizado con variables para temas
+- **Frameworks y Bibliotecas**:
+  - **Bootstrap 5**: Para la estructura y estilos base de la interfaz de usuario.
+  - **Bootstrap Icons**: Para la iconografía de la aplicación.
+  - **Cytoscape.js**: Para la visualización interactiva de grafos de cursos y prerrequisitos.
+  - **Dagre.js**: Como layout para Cytoscape.js, para organizar automáticamente los nodos del grafo.
+- **Fuentes**:
+  - **Google Fonts (Inter y Montserrat)**: Descargadas y servidas localmente para asegurar la disponibilidad offline y consistencia visual.
 - **Control de versiones**: Git
 - **Entorno de desarrollo**: Visual Studio Code
 
 ## 📥 Instalación
 
-Este proyecto no requiere instalación de dependencias externas, ya que utiliza JavaScript vanilla y CSS puro.
+Todas las dependencias necesarias (Bootstrap, Bootstrap Icons, Cytoscape.js, Dagre.js, y fuentes) están incluidas localmente en el repositorio. No se requiere un proceso de instalación de paquetes externos.
 
 1. Clona el repositorio:
 
@@ -53,7 +59,7 @@ git clone https://github.com/trinity-bytes/curriculum-flow.git
 cd curriculum-flow
 ```
 
-3. Abre `index.html` en tu navegador o utiliza un servidor local como Live Server en VS Code.
+3. Abre `index.html` en tu navegador. Se recomienda utilizar un servidor local (como la extensión "Live Server" en VS Code) para un mejor rendimiento y para evitar posibles problemas con las rutas de archivos al cargar módulos JS o recursos.
 
 ## 🚀 Uso
 
@@ -77,10 +83,22 @@ El sistema opera bajo las siguientes reglas de negocio:
 ```
 /curriculum-flow
 ├── css/
-│   ├── main.css
-│   └── graph.css
+│   ├── bootstrap/
+│   │   └── bootstrap.min.css         # Bootstrap 5 CSS
+│   ├── bootstrap-icons/
+│   │   ├── bootstrap-icons.css       # Bootstrap Icons CSS
+│   │   └── fonts/                    # Archivos de fuentes de Bootstrap Icons (.woff, .woff2)
+│   ├── main.css                      # Estilos personalizados principales
+│   └── graph.css                     # Estilos para la visualización del grafo
 ├── js/
-│   ├── main.js
+│   ├── lib/
+│   │   ├── bootstrap/
+│   │   │   └── bootstrap.bundle.min.js # Bootstrap 5 JS Bundle
+│   │   ├── cytoscape.min.js            # Cytoscape.js (core)
+│   │   ├── dagre/
+│   │   │   └── dagre.min.js            # Dagre.js (para layout de Cytoscape)
+│   │   └── cytoscape-dagre/
+│   │       └── cytoscape-dagre.js      # Adaptador de Cytoscape para Dagre
 │   ├── models/
 │   │   ├── Curso.js
 │   │   └── Curriculum.js
@@ -89,14 +107,16 @@ El sistema opera bajo las siguientes reglas de negocio:
 │   ├── views/
 │   │   ├── CursoView.js
 │   │   └── GraphView.js
-│   └── utils/
-│       └── lib/
-│           └── cytoscape.min.js
+│   └── main.js                       # Script principal de la aplicación
 ├── assets/
-│   ├── imgs/  // Contiene los logos e imágenes de la aplicación
-│   └── fonts/ // Contiene las fuentes personalizadas
-├── index.html
-└── README.md
+│   ├── imgs/                         # Logos e imágenes de la aplicación
+│   └── fonts/                        # Fuentes personalizadas (Inter, Montserrat)
+│       ├── local-google-fonts.css    # CSS para cargar fuentes locales
+│       ├── Inter_*.ttf
+│       └── Montserrat_*.ttf
+├── index.html                        # Página principal de la aplicación
+├── README.md                         # Este archivo
+└── LICENSE                           # Licencia del proyecto
 ```
 
 ## 🧮 Algoritmos implementados
