@@ -16,10 +16,17 @@ class CursoView {
             <div class="card-body">
               <ul class="list-group">
       `;
-
       const cursosCiclo = curriculum.obtenerCursosPorCiclo(ciclo);
       for (const curso of cursosCiclo) {
-        html += `<li class="list-group-item">C${curso.id}</li>`;
+        html += `
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold text-primary">C${curso.id} - ${curso.nombre}</div>
+              <small class="text-muted">Prerrequisitos: ${curso.cursosPrerequisito.length}</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary consult-btn" data-course-id="${curso.id}">Detalles</button>
+          </li>
+        `;
       }
 
       html += `
@@ -44,26 +51,42 @@ class CursoView {
           <h2 class="accordion-header" id="heading${index}">
             <button class="accordion-button collapsed" type="button" 
                     data-bs-toggle="collapse" data-bs-target="#collapse${index}">
-              C${curso.id} (Ciclo ${curso.ciclo})
+              C${curso.id} - ${curso.nombre} (Ciclo ${curso.ciclo})
             </button>
           </h2>
           <div id="collapse${index}" class="accordion-collapse collapse" 
                data-bs-parent="#prereqAccordion">
             <div class="accordion-body">
-              <p><strong>Es prerequisito de:</strong> 
+              <p><strong>Sus prerequisitos son:</strong> 
+                <span class="badge bg-success me-1">${
+                  curso.cursosEsPrerequisito.length
+                }</span>
                 ${
                   curso.cursosEsPrerequisito.length
                     ? curso.cursosEsPrerequisito
-                        .map((id) => `C${id}`)
-                        .join(", ")
-                    : "Ninguno"
+                        .map((id) => curriculum.obtenerCursoPorId(id))
+                        .map(
+                          (c) =>
+                            `<span class="badge bg-light text-dark">C${c.id} - ${c.nombre}</span>`
+                        )
+                        .join(" ")
+                    : '<span class=\\"badge bg-secondary\\">Ninguno</span>'
                 }
               </p>
-              <p><strong>Sus prerequisitos son:</strong> 
+              <p><strong>Es prerequisito de:</strong> 
+                <span class="badge bg-warning text-dark me-1">${
+                  curso.cursosPrerequisito.length
+                }</span>
                 ${
                   curso.cursosPrerequisito.length
-                    ? curso.cursosPrerequisito.map((id) => `C${id}`).join(", ")
-                    : "Ninguno"
+                    ? curso.cursosPrerequisito
+                        .map((id) => curriculum.obtenerCursoPorId(id))
+                        .map(
+                          (c) =>
+                            `<span class="badge bg-light text-dark">C${c.id} - ${c.nombre}</span>`
+                        )
+                        .join(" ")
+                    : '<span class=\\"badge bg-secondary\\">Ninguno</span>'
                 }
               </p>
             </div>
@@ -77,24 +100,47 @@ class CursoView {
   }
 
   // Mostrar información de un curso específico
-  mostrarInformacionCurso(curso) {
+  mostrarInformacionCurso(curso, curriculum) {
+    // Added curriculum parameter
     let html = `
       <div class="card">
-        <div class="card-header bg-primary text-white">C${curso.id}</div>
+        <div class="card-header bg-primary text-white">C${curso.id} - ${
+      curso.nombre
+    }</div>
         <div class="card-body">
-          <p><strong>Ciclo:</strong> ${curso.ciclo}</p>
-          <p><strong>Es prerequisito de:</strong> 
+          <p><strong>Ciclo:</strong> <span class="badge bg-info">${
+            curso.ciclo
+          }</span></p>
+          <p><strong>Sus prerequisitos son:</strong> 
+            <span class="badge bg-success me-1">${
+              curso.cursosEsPrerequisito.length
+            }</span>
             ${
               curso.cursosEsPrerequisito.length
-                ? curso.cursosEsPrerequisito.map((id) => `C${id}`).join(", ")
-                : "Ninguno"
+                ? curso.cursosEsPrerequisito
+                    .map((id) => curriculum.obtenerCursoPorId(id)) // Assumes curriculum is accessible
+                    .map(
+                      (c) =>
+                        `<span class="badge bg-light text-dark">C${c.id} - ${c.nombre}</span>`
+                    )
+                    .join(" ")
+                : '<span class=\\"badge bg-secondary\\">Ninguno</span>'
             }
           </p>
-          <p><strong>Sus prerequisitos son:</strong> 
+          <p><strong>Es prerequisito de:</strong> 
+            <span class="badge bg-warning text-dark me-1">${
+              curso.cursosPrerequisito.length
+            }</span>
             ${
               curso.cursosPrerequisito.length
-                ? curso.cursosPrerequisito.map((id) => `C${id}`).join(", ")
-                : "Ninguno"
+                ? curso.cursosPrerequisito
+                    .map((id) => curriculum.obtenerCursoPorId(id)) // Assumes curriculum is accessible
+                    .map(
+                      (c) =>
+                        `<span class="badge bg-light text-dark">C${c.id} - ${c.nombre}</span>`
+                    )
+                    .join(" ")
+                : '<span class=\\"badge bg-secondary\\">Ninguno</span>'
             }
           </p>
            </div>

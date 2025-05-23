@@ -18,52 +18,147 @@ Problema propuesto:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistema de Gestión de Prerrequisitos</title>
+    <title>CurriculumFlow - Gestión Inteligente de Prerrequisitos</title>
+    <meta
+      name="description"
+      content="Plataforma avanzada para la gestión y visualización de prerrequisitos académicos basada en relaciones de orden parcial"
+    />
     <!-- Bootstrap CDN -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/graph.css" />
   </head>
   <body>
-    <nav class="navbar navbar-dark bg-primary">
+    <!-- Header mejorado -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary shadow">
       <div class="container">
-        <span class="navbar-brand">Sistema de Gestión de Prerrequisitos</span>
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <i class="bi bi-diagram-3 me-2 fs-3"></i>
+          <div>
+            <div class="fw-bold">CurriculumFlow</div>
+            <small class="text-light opacity-75"
+              >Academic Management Platform</small
+            >
+          </div>
+        </a>
+        <div class="ms-auto">
+          <span class="badge bg-light text-dark me-2">
+            <i class="bi bi-mortarboard me-1"></i>
+            Sistema Académico
+          </span>
+          <span class="badge bg-warning text-dark">
+            <i class="bi bi-graph-up me-1"></i>
+            v2.0
+          </span>
+        </div>
       </div>
     </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section bg-light py-4 border-bottom">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="h3 mb-2 text-primary">
+              <i class="bi bi-trophy me-2"></i>
+              Dashboard de Gestión Curricular
+            </h1>
+            <p class="text-muted mb-1">
+              Visualiza y gestiona 50 cursos distribuidos en 10 ciclos
+              académicos usando algoritmos de orden parcial
+            </p>
+            <p class="text-primary fw-semibold mb-0" style="font-style: italic">
+              "Optimiza las rutas académicas, maximiza el potencial"
+            </p>
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="stats-card bg-white p-3 rounded shadow-sm">
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="h4 mb-0 text-primary">50</div>
+                  <small class="text-muted">Cursos</small>
+                </div>
+                <div class="col-4">
+                  <div class="h4 mb-0 text-success">10</div>
+                  <small class="text-muted">Ciclos</small>
+                </div>
+                <div class="col-4">
+                  <div class="h4 mb-0 text-warning">∞</div>
+                  <small class="text-muted">Relaciones</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container mt-4">
       <div class="row">
         <div class="col-md-3">
-          <!-- Panel de control -->
-          <div class="card">
-            <div class="card-header">Opciones</div>
+          <!-- Panel de control mejorado -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+              <h6 class="mb-0">
+                <i class="bi bi-gear me-2"></i>
+                Panel de Control
+              </h6>
+            </div>
             <div class="card-body">
-              <button id="btnMostrarCursos" class="btn btn-primary mb-2 w-100">
-                Mostrar Cursos
-              </button>
-              <button
-                id="btnMostrarPrerequisitos"
-                class="btn btn-primary mb-2 w-100"
-              >
-                Mostrar Prerrequisitos
-              </button>
-              <button id="btnMostrarGrafo" class="btn btn-primary mb-2 w-100">
-                Visualizar Grafo
-              </button>
-              <hr />
-              <div class="mb-3">
-                <label for="cursoSelect" class="form-label"
-                  >Consultar Curso:</label
+              <div class="d-grid gap-2">
+                <button id="btnMostrarCursos" class="btn btn-outline-primary">
+                  <i class="bi bi-grid-3x3-gap me-2"></i>
+                  Ver Malla Curricular
+                </button>
+                <button
+                  id="btnMostrarPrerequisitos"
+                  class="btn btn-outline-success"
                 >
+                  <i class="bi bi-diagram-2 me-2"></i>
+                  Analizar Prerrequisitos
+                </button>
+                <button id="btnMostrarGrafo" class="btn btn-outline-info">
+                  <i class="bi bi-share me-2"></i>
+                  Visualización Interactiva
+                </button>
+              </div>
+
+              <hr class="my-3" />
+
+              <div class="mb-3">
+                <label for="cursoSelect" class="form-label fw-semibold">
+                  <i class="bi bi-search me-1"></i>
+                  Consulta Específica:
+                </label>
                 <select id="cursoSelect" class="form-select"></select>
                 <button
                   id="btnConsultarCurso"
-                  class="btn btn-secondary mt-2 w-100"
+                  class="btn btn-secondary w-100 mt-2"
                 >
-                  Consultar
+                  <i class="bi bi-info-circle me-2"></i>
+                  Consultar Detalles
                 </button>
+              </div>
+
+              <!-- Información adicional -->
+              <div class="mt-4">
+                <div
+                  class="alert alert-light border-start border-4 border-primary"
+                >
+                  <small class="text-muted">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    <strong>Tecnología:</strong> Algoritmos de orden parcial
+                    para optimización académica
+                  </small>
+                </div>
               </div>
             </div>
           </div>
@@ -115,5 +210,76 @@ Problema propuesto:
     <script src="js/views/GraphView.js"></script>
     <script src="js/controllers/AppController.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- Footer profesional -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-diagram-3 me-2 fs-3 text-info"></i>
+              <div>
+                <h6 class="fw-bold mb-0 text-light">CurriculumFlow</h6>
+                <small class="text-light opacity-75"
+                  >"Optimiza las rutas académicas, maximiza el potencial"</small
+                >
+              </div>
+            </div>
+            <p class="small mb-2 text-light">
+              Plataforma de gestión académica basada en algoritmos de orden
+              parcial. Desarrollado para optimizar la planificación curricular
+              universitaria.
+            </p>
+            <div class="text-warning small">
+              <i class="bi bi-award me-1"></i>
+              Proyecto de Matemática Discreta - UPC 2025
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h6 class="fw-bold text-light">Características</h6>
+            <ul class="list-unstyled small">
+              <li>
+                <i class="bi bi-check2 text-success me-1"></i>
+                <span class="text-light">Análisis de 50 cursos</span>
+              </li>
+              <li>
+                <i class="bi bi-check2 text-success me-1"></i>
+                <span class="text-light">10 ciclos académicos</span>
+              </li>
+              <li>
+                <i class="bi bi-check2 text-success me-1"></i>
+                <span class="text-light">Visualización interactiva</span>
+              </li>
+              <li>
+                <i class="bi bi-check2 text-success me-1"></i>
+                <span class="text-light">Algoritmos optimizados</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h6 class="fw-bold text-light">Tecnologías</h6>
+            <div class="d-flex flex-wrap gap-1">
+              <span class="badge bg-primary">JavaScript ES6+</span>
+              <span class="badge bg-info">Bootstrap 5</span>
+              <span class="badge bg-success">Cytoscape.js</span>
+              <span class="badge bg-warning text-dark">Graph Theory</span>
+            </div>
+          </div>
+        </div>
+        <hr class="my-3" />
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <small class="text-light">
+              © 2025 CurriculumFlow. Aplicación de relaciones de orden parcial.
+            </small>
+          </div>
+          <div class="col-md-6 text-end">
+            <small class="text-light">
+              Versión 2.0 | Universidad Peruana de Ciencias Aplicadas
+            </small>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -51,16 +51,16 @@ class GraphView {
             "background-color": (ele) => {
               const ciclo = ele.data("ciclo");
               const colors = [
-                "#3498db",
-                "#e74c3c",
-                "#2ecc71",
-                "#f39c12",
-                "#9b59b6",
-                "#1abc9c",
-                "#d35400",
-                "#34495e",
-                "#7f8c8d",
-                "#c0392b",
+                "#2A6EB8", // Azul principal
+                "#37A06D", // Verde principal
+                "#3E4A5A", // Gris sólido
+                "#1a5490", // Azul oscuro
+                "#2d8f5f", // Verde oscuro
+                "#17a2b8", // Azul info
+                "#fd7e14", // Naranja
+                "#6f42c1", // Púrpura
+                "#e83e8c", // Rosa
+                "#20c997", // Teal
               ];
               return colors[(ciclo - 1) % colors.length];
             },

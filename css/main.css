@@ -1,13 +1,72 @@
-/* css/main.css */
+/* CurriculumFlow - Branding Personalizado */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap");
+
+/* Variables de colores del branding */
+:root {
+  --primary-blue: #2a6eb8;
+  --success-green: #37a06d;
+  --solid-gray: #3e4a5a;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --text-muted: #6c757d;
+}
+
+/* Tipografías */
 body {
-  background-color: #f8f9fa;
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--light-bg);
+  color: var(--solid-gray);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+}
+
+/* Header y navegación */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5490 100%);
+  box-shadow: 0 4px 20px rgba(42, 110, 184, 0.3);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 3px solid var(--primary-blue);
+}
+
+/* Cards y componentes */
 .card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(42, 110, 184, 0.15);
+}
+
+.card-header {
+  background: var(--primary-blue) !important;
+  color: white !important;
+  border-radius: 12px 12px 0 0 !important;
+  font-weight: 600;
+}
+
+/* Botones personalizados */
 .btn-primary {
   background-color: #3498db;
   border-color: #3498db;
@@ -18,28 +77,175 @@ body {
   border-color: #2980b9;
 }
 
-/* Estilos para la vista de ciclos */
+.btn-outline-primary {
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(42, 110, 184, 0.3);
+}
+
+.btn-outline-success {
+  color: var(--success-green);
+  border-color: var(--success-green);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--success-green);
+  border-color: var(--success-green);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(55, 160, 109, 0.3);
+}
+
+.btn-outline-info {
+  color: var(--solid-gray);
+  border-color: var(--solid-gray);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-info:hover {
+  background-color: var(--solid-gray);
+  border-color: var(--solid-gray);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(62, 74, 90, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--solid-gray);
+  border-color: var(--solid-gray);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background-color: #2c3540;
+  border-color: #2c3540;
+  transform: translateY(-2px);
+}
+
+/* Stats card mejorada */
+.stats-card {
+  border-left: 4px solid var(--primary-blue);
+  background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+}
+
+.stats-card .h4 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+}
+
+/* Colores personalizados para estadísticas */
+.text-primary {
+  color: var(--primary-blue) !important;
+}
+.text-success {
+  color: var(--success-green) !important;
+}
+
+/* Efectos de hover mejorados */
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Acordeones */
+.accordion-button:not(.collapsed) {
+  background-color: rgba(42, 110, 184, 0.1);
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.accordion-button {
+  font-weight: 500;
+}
+
+/* Lista de grupos */
 .list-group-item {
-  transition: background-color 0.2s;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  transition: all 0.2s ease;
 }
 
 .list-group-item:hover {
-  background-color: #e9f7fe;
+  background-color: rgba(42, 110, 184, 0.05);
+  transform: translateX(5px);
 }
 
-/* Estilos para acordeones */
-.accordion-button:not(.collapsed) {
-  background-color: #e9f7fe;
-  color: #3498db;
+/* Badges modernos */
+.badge {
+  font-weight: 500;
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
 }
 
-/* Animaciones */
+.bg-light {
+  background-color: #f8f9fa !important;
+  color: var(--solid-gray) !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* Alert personalizado */
+.alert-light {
+  background-color: rgba(42, 110, 184, 0.05);
+  border-left: 4px solid var(--primary-blue);
+  border-radius: 8px;
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(135deg, var(--solid-gray) 0%, #2c3540 100%);
+}
+
+/* Corregir colores del footer */
+footer .text-muted {
+  color: #d1d5db !important; /* Gris claro en lugar de oscuro */
+}
+
+footer small.text-muted {
+  color: #f8f9fa !important; /* Blanco suave para el copyright y versión */
+}
+
+footer .text-info {
+  color: #7dd3fc !important; /* Azul más claro para el ícono */
+}
+
+/* Animaciones suaves */
 .card,
-.btn {
-  transition: transform 0.2s;
+.btn,
+.list-group-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.card:hover,
-.btn:hover {
-  transform: translateY(-2px);
+/* Iconos */
+.bi {
+  vertical-align: -0.125em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section .stats-card {
+    margin-top: 1rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
 }
