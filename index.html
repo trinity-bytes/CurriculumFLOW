@@ -133,11 +133,30 @@ Problema propuesto:
 
               <hr class="my-3" />
 
+              <!-- Combined Query and Search Section -->
               <div class="mb-3">
-                <label for="cursoSelect" class="form-label fw-semibold">
+                <label for="buscarCursoInput" class="form-label fw-semibold">
                   <i class="bi bi-search me-1"></i>
+                  Buscar Curso:
+                </label>
+
+                <input
+                  type="text"
+                  id="buscarCursoInput"
+                  class="form-control mb-3"
+                  placeholder="Buscar por nombre, ID o palabra clave..."
+                />
+
+                <label for="cursoSelect" class="form-label fw-semibold">
+                  <i class="bi bi-binoculars me-1"></i>
                   Consulta Específica:
                 </label>
+                <div
+                  id="searchFeedback"
+                  class="form-text text-muted mt-1"
+                  style="min-height: 1.2em"
+                ></div>
+                <!-- Added for search feedback -->
                 <select id="cursoSelect" class="form-select"></select>
                 <button
                   id="btnConsultarCurso"
@@ -147,9 +166,11 @@ Problema propuesto:
                   Consultar Detalles
                 </button>
               </div>
+              <!-- End of Combined Query and Search Section -->
 
-              <!-- Información adicional -->
-              <div class="mt-4">
+              <!-- Información adicional (Tecnología) - Moved Down -->
+              <div class="mt-3">
+                <!-- Adjusted margin-top if needed -->
                 <div
                   class="alert alert-light border-start border-4 border-primary"
                 >
