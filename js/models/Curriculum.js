@@ -4,6 +4,7 @@ class Curriculum {
     this.TOTAL_CURSOS = 50;
     this.CICLOS = 10;
     this.mapaCursos = new Map(); // Helper for quick ID to curso lookup
+    this.MAX_PREREQUISITE_CYCLE_SPAN = 4; // Max difference in cycles for a prerequisite
   }
 
   // Generar los 50 cursos distribuidos en 10 ciclos
@@ -37,44 +38,47 @@ class Curriculum {
     // 1. Iterate C1-C45 (IDs 1-45). These are 'cursoOrigen' (the ones that can BE prerequisites).
     for (let idOrigen = 1; idOrigen <= 45; idOrigen++) {
       const cursoOrigen = this.obtenerCursoPorId(idOrigen);
-      if (!cursoOrigen) continue;
+      if (!cursoOrigen) continue; // Should not happen
 
-      // These courses (C1-C45) can be prerequisites for 0, 1, or 2 other courses.
-      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // Results in 0, 1, or 2
-
+      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // 0, 1, or 2
       let cursosDestinoAsignados = 0;
-      let attemptsTotal = 0; // Safety break for the while loop per cursoOrigen to prevent infinite loops
+      let attemptsTotal = 0; // Prevent infinite loops
 
-      // Attempt to find 'numVecesEsPrerequisito' valid destination courses
       while (
         cursosDestinoAsignados < numVecesEsPrerequisito &&
-        attemptsTotal < 100
+        attemptsTotal < 100 // Safety break
       ) {
         attemptsTotal++;
 
-        // Select a potential 'cursoDestino' randomly from all courses
-        const idDestino = Math.floor(Math.random() * this.TOTAL_CURSOS) + 1;
-        const cursoDestino = this.obtenerCursoPorId(idDestino);
+        const idDestinoPotencial =
+          Math.floor(Math.random() * this.TOTAL_CURSOS) + 1;
+        const cursoDestino = this.obtenerCursoPorId(idDestinoPotencial);
 
         if (!cursoDestino) continue;
 
-        // Conditions for a valid 'cursoDestino':
-        const esMismoCurso = cursoDestino.id === cursoOrigen.id;
-        const esCicloPosterior = cursoDestino.ciclo > cursoOrigen.ciclo;
-        // Courses in Ciclo 1 (IDs 1-5) cannot have prerequisites.
-        const destinoNoEsDeCiclo1 = cursoDestino.ciclo > 1;
-        // Check if cursoOrigen is already a prerequisite for cursoDestino
-        const yaEsPrerequisito = cursoOrigen.cursosEsPrerequisito.includes(
-          cursoDestino.id
-        );
+        // --- VALIDATION RULES for (cursoOrigen R cursoDestino) ---
+        const destinoEnCicloPosterior = cursoDestino.ciclo > cursoOrigen.ciclo;
+        const destinoNoEsOrigenMismo = cursoDestino.id !== cursoOrigen.id;
+        const destinoNoEsPrerequisitoYa =
+          !cursoOrigen.cursosEsPrerequisito.includes(cursoDestino.id);
+        const destinoNoExcedeCapacidadPrerequisitos =
+          cursoDestino.cursosPrerequisito.length < 2;
+        const destinoNoEsDeCiclo1 = cursoDestino.ciclo > 1; // Ensures C1-C5 don't get prerequisites
+
+        // New condition: Prerequisite cycle span coherency
+        const destinoCicloCoherente =
+          cursoDestino.ciclo <=
+          cursoOrigen.ciclo + this.MAX_PREREQUISITE_CYCLE_SPAN;
 
         if (
-          !esMismoCurso &&
-          esCicloPosterior &&
+          destinoEnCicloPosterior &&
+          destinoNoEsOrigenMismo &&
+          destinoNoEsPrerequisitoYa &&
+          destinoNoExcedeCapacidadPrerequisitos &&
           destinoNoEsDeCiclo1 &&
-          !yaEsPrerequisito
+          destinoCicloCoherente // Added new coherency check
         ) {
-          // If all conditions met, establish the prerequisite relationship
+          // All checks passed, establish the prerequisite relationship
           cursoOrigen.agregarEsPrerequisito(cursoDestino.id);
           cursoDestino.agregarPrerequisito(cursoOrigen.id);
           cursosDestinoAsignados++;
@@ -95,7 +99,7 @@ class Curriculum {
     // 3. Explicitly ensure C46-C50 (Ciclo 10 courses) are not prerequisites for any other course.
     // This is guaranteed because the main loop for 'idOrigen' only goes up to 45.
     // Their 'cursosEsPrerequisito' arrays will naturally remain empty.
-    // For added assurance, we can clear them, though it's redundant with correct loop bounds.
+    // For added assurance, we can clear them.
     for (let i = 46; i <= 50; i++) {
       const cursoCiclo10 = this.obtenerCursoPorId(i);
       if (cursoCiclo10) {
