@@ -6,6 +6,7 @@
   --teal-profundo: #008080;
   --teal-mas-oscuro: #004040; /* Tono teal más oscuro para el degradado */
   --coral-vibrante: #ff7f50;
+  --coral-vibrante-suavizado: #ff997a; /* Softer coral for hover effects */
   --ambar-dorado: #ffbf00;
   --blanco-puro: #ffffff;
   --gris-suave: #f8f9fa; /* Similar to old --light-bg */
@@ -267,6 +268,12 @@ h6,
 .stats-card .h4 {
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
+  font-size: 1.75rem; /* Establecer tamaño base para números e icono */
+}
+
+.stats-card .h4 .bi-infinity {
+  vertical-align: middle; /* Mejorar alineación vertical del icono */
+  /* Si es necesario, se puede ajustar font-size aquí, ej: font-size: 0.9em; */
 }
 
 /* Colores personalizados para estadísticas */
@@ -595,6 +602,23 @@ footer a:hover {
   border-left-style: solid !important; /* Ensure solid style for the left border */
   border-left-color: var(
     --coral-vibrante-suavizado
-  ) !important; /* Apply the softened coral color */
+  ); /* Apply the softened coral color */
   /* Text color is handled by .text-muted and should provide enough contrast */
 }
+
+/* Custom button style for "Detalles" in course cards */
+.btn-details-custom {
+  background-color: var(--bs-white); /* Standard white background */
+  border-color: var(--bs-warning); /* Golden border */
+  color: #ecb305; /* Darker golden text for better contrast */
+}
+
+.btn-details-custom:hover,
+.btn-details-custom:focus,
+.btn-details-custom:active {
+  background-color: #f8f9fa; /* Very light gray on interaction (Bootstrap's bg-light) */
+  border-color: #ffa601; /* Darker gold for border on interaction */
+  color: #ffa601; /* Keep text darker golden */
+}
+
+/* Asegurar que los estilos responsivos o finales estén después */

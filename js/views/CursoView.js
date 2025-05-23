@@ -30,7 +30,7 @@ class CursoView {
               <div class="fw-bold text-primary">C${curso.id} - ${curso.nombre}</div>
               <small class="text-muted">Prerrequisitos: ${curso.cursosPrerequisito.length}</small>
             </div>
-            <button class="btn btn-sm btn-outline-primary consult-btn-modal" 
+            <button class="btn btn-sm btn-details-custom consult-btn-modal" 
                     data-course-id="${curso.id}" 
                     data-bs-toggle="modal" 
                     data-bs-target="#cursoModal" 
