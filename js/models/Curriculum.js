@@ -1,25 +1,38 @@
+/**
+ * Representa el plan de estudios completo, gestionando los cursos y sus relaciones.
+ */
 class Curriculum {
+  /**
+   * Crea una instancia de Curriculum.
+   */
   constructor() {
+    /** @type {Curso[]} */
     this.cursos = [];
+    /** @type {number} */
     this.TOTAL_CURSOS = 50;
+    /** @type {number} */
     this.CICLOS = 10;
-    this.mapaCursos = new Map(); // Helper for quick ID to curso lookup
-    this.MAX_PREREQUISITE_CYCLE_SPAN = 4; // Max difference in cycles for a prerequisite
+    /** @type {Map<number, Curso>} */
+    this.mapaCursos = new Map(); // Ayudante para búsqueda rápida de ID a curso
+    /** @type {number} */
+    this.MAX_PREREQUISITE_CYCLE_SPAN = 4; // Máxima diferencia en ciclos para un prerrequisito
   }
 
-  // Generar los 50 cursos distribuidos en 10 ciclos
+  /**
+   * Genera los cursos del plan de estudios, distribuyéndolos en ciclos.
+   */
   generarCursos() {
     this.cursos = [];
-    this.mapaCursos.clear(); // Clear map before generating
+    this.mapaCursos.clear(); // Limpiar mapa antes de generar
     let ciclo = 1;
     let contador = 0;
 
     for (let i = 1; i <= this.TOTAL_CURSOS; i++) {
       const nuevoCurso = new Curso(i, ciclo);
       this.cursos.push(nuevoCurso);
-      this.mapaCursos.set(i, nuevoCurso); // Populate map
+      this.mapaCursos.set(i, nuevoCurso); // Poblar mapa
       contador++;
-      // Ensure ciclo doesn't exceed CICLOS, relevant if TOTAL_CURSOS isn't a perfect multiple or CICLOS changes
+      // Asegurar que el ciclo no exceda CICLOS, relevante si TOTAL_CURSOS no es un múltiplo perfecto o si CICLOS cambia
       if (contador === 5 && ciclo < this.CICLOS) {
         contador = 0;
         ciclo++;
@@ -27,26 +40,29 @@ class Curriculum {
     }
   }
 
-  // Generar prerrequisitos aleatorios - Corrected Logic
+  /**
+   * Genera las relaciones de prerrequisitos entre los cursos de forma aleatoria,
+   * asegurando coherencia (ej. un curso no puede ser prerrequisito de sí mismo o de un ciclo anterior).
+   */
   generarRequisitos() {
-    // 0. Clear existing prerequisite relationships for all courses
+    // 0. Limpiar las relaciones de prerrequisitos existentes para todos los cursos
     this.cursos.forEach((curso) => {
       curso.cursosPrerequisito = [];
       curso.cursosEsPrerequisito = [];
     });
 
-    // 1. Iterate C1-C45 (IDs 1-45). These are 'cursoOrigen' (the ones that can BE prerequisites).
+    // 1. Iterar C1-C45 (IDs 1-45). Estos son 'cursoOrigen' (los que PUEDEN SER prerrequisitos).
     for (let idOrigen = 1; idOrigen <= 45; idOrigen++) {
       const cursoOrigen = this.obtenerCursoPorId(idOrigen);
-      if (!cursoOrigen) continue; // Should not happen
+      if (!cursoOrigen) continue; // No debería suceder
 
-      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // 0, 1, or 2
+      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // 0, 1, o 2
       let cursosDestinoAsignados = 0;
-      let attemptsTotal = 0; // Prevent infinite loops
+      let attemptsTotal = 0; // Prevenir bucles infinitos
 
       while (
         cursosDestinoAsignados < numVecesEsPrerequisito &&
-        attemptsTotal < 100 // Safety break
+        attemptsTotal < 100 // Salida de seguridad
       ) {
         attemptsTotal++;
 
@@ -56,16 +72,16 @@ class Curriculum {
 
         if (!cursoDestino) continue;
 
-        // --- VALIDATION RULES for (cursoOrigen R cursoDestino) ---
+        // --- REGLAS DE VALIDACIÓN para (cursoOrigen R cursoDestino) ---
         const destinoEnCicloPosterior = cursoDestino.ciclo > cursoOrigen.ciclo;
         const destinoNoEsOrigenMismo = cursoDestino.id !== cursoOrigen.id;
         const destinoNoEsPrerequisitoYa =
           !cursoOrigen.cursosEsPrerequisito.includes(cursoDestino.id);
         const destinoNoExcedeCapacidadPrerequisitos =
           cursoDestino.cursosPrerequisito.length < 2;
-        const destinoNoEsDeCiclo1 = cursoDestino.ciclo > 1; // Ensures C1-C5 don't get prerequisites
+        const destinoNoEsDeCiclo1 = cursoDestino.ciclo > 1; // Asegura que C1-C5 no tengan prerrequisitos
 
-        // New condition: Prerequisite cycle span coherency
+        // Nueva condición: Coherencia del rango de ciclos para prerrequisitos
         const destinoCicloCoherente =
           cursoDestino.ciclo <=
           cursoOrigen.ciclo + this.MAX_PREREQUISITE_CYCLE_SPAN;
@@ -76,9 +92,9 @@ class Curriculum {
           destinoNoEsPrerequisitoYa &&
           destinoNoExcedeCapacidadPrerequisitos &&
           destinoNoEsDeCiclo1 &&
-          destinoCicloCoherente // Added new coherency check
+          destinoCicloCoherente // Nueva comprobación de coherencia agregada
         ) {
-          // All checks passed, establish the prerequisite relationship
+          // Todas las comprobaciones pasaron, establecer la relación de prerrequisito
           cursoOrigen.agregarEsPrerequisito(cursoDestino.id);
           cursoDestino.agregarPrerequisito(cursoOrigen.id);
           cursosDestinoAsignados++;
@@ -86,9 +102,9 @@ class Curriculum {
       }
     }
 
-    // 2. Explicitly ensure C1-C5 (Ciclo 1 courses) have no prerequisites.
-    // This should be guaranteed by 'destinoNoEsDeCiclo1' condition above,
-    // but this serves as an absolute safeguard.
+    // 2. Asegurar explícitamente que los cursos C1-C5 (cursos del Ciclo 1) no tengan prerrequisitos.
+    // Esto debería estar garantizado por la condición 'destinoNoEsDeCiclo1' anterior,
+    // pero esto sirve como una salvaguarda absoluta.
     for (let i = 1; i <= 5; i++) {
       const cursoCiclo1 = this.obtenerCursoPorId(i);
       if (cursoCiclo1) {
@@ -96,10 +112,10 @@ class Curriculum {
       }
     }
 
-    // 3. Explicitly ensure C46-C50 (Ciclo 10 courses) are not prerequisites for any other course.
-    // This is guaranteed because the main loop for 'idOrigen' only goes up to 45.
-    // Their 'cursosEsPrerequisito' arrays will naturally remain empty.
-    // For added assurance, we can clear them.
+    // 3. Asegurar explícitamente que los cursos C46-C50 (cursos del Ciclo 10) no sean prerrequisitos para ningún otro curso.
+    // Esto está garantizado porque el bucle principal para 'idOrigen' solo llega hasta 45.
+    // Sus arreglos 'cursosEsPrerequisito' permanecerán vacíos naturalmente.
+    // Para mayor seguridad, podemos limpiarlos.
     for (let i = 46; i <= 50; i++) {
       const cursoCiclo10 = this.obtenerCursoPorId(i);
       if (cursoCiclo10) {
@@ -108,17 +124,30 @@ class Curriculum {
     }
   }
 
-  // Obtener curso por ID
+  /**
+   * Obtiene un curso específico por su ID.
+   * @param {number} id - El ID del curso a obtener.
+   * @returns {Curso | undefined} El curso encontrado o undefined si no existe.
+   */
   obtenerCursoPorId(id) {
-    // Use map for efficiency, fallback to find if map isn't populated (should not happen with current flow)
+    // Usar mapa por eficiencia, recurrir a find si el mapa no está poblado (no debería suceder con el flujo actual)
     return this.mapaCursos.get(id) || this.cursos.find((c) => c.id === id);
   }
 
-  // Obtener cursos por ciclo
+  /**
+   * Obtiene todos los cursos pertenecientes a un ciclo específico.
+   * @param {number} ciclo - El número del ciclo.
+   * @returns {Curso[]} Un arreglo de cursos del ciclo especificado.
+   */
   obtenerCursosPorCiclo(ciclo) {
     return this.cursos.filter((c) => c.ciclo === ciclo);
   }
-  // Ordenamiento topológico - versión JS del algoritmo en C++
+  /**
+   * Realiza un ordenamiento topológico de los cursos basado en sus prerrequisitos.
+   * Útil para determinar un orden válido de cursado.
+   * @returns {number[]} Un arreglo de IDs de cursos ordenados topológicamente.
+   *                      En caso de detectar un ciclo en los prerrequisitos, se emite un error en consola.
+   */
   ordenarCursosTopologicamente() {
     const visitados = new Array(this.TOTAL_CURSOS + 1).fill(false);
     const enProceso = new Array(this.TOTAL_CURSOS + 1).fill(false);

@@ -1,14 +1,22 @@
-// js/main.js
+/**
+ * Punto de entrada principal de la aplicación CurriculumFlow.
+ * Se ejecuta cuando el DOM está completamente cargado.
+ */
 document.addEventListener("DOMContentLoaded", () => {
-  // Inicializar controlador
+  // Inicializar controlador principal de la aplicación
   const app = new AppController();
 
-  // Mostrar vista inicial
+  // Simular clic en el botón "Mostrar Cursos" para cargar la vista inicial
   document.getElementById("btnMostrarCursos").click();
 
+  /** @type {HTMLElement | null} */
   const searchFeedbackEl = document.getElementById("searchFeedback");
 
-  // Funcionalidad de búsqueda/filtrado para el input estático
+  /**
+   * Normaliza una cadena de texto eliminando acentos y convirtiéndola a minúsculas.
+   * @param {string} str - La cadena a normalizar.
+   * @returns {string} La cadena normalizada.
+   */
   const _deaccentAndLower = (str) => {
     if (!str) return "";
     return str
@@ -17,17 +25,26 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLowerCase();
   };
 
+  /**
+   * Filtra las opciones del elemento SELECT de cursos basándose en el texto introducido
+   * en el campo de búsqueda. Actualiza el mensaje de retroalimentación.
+   */
   const buscarCursoEnSelect = () => {
-    const textoInput = document.getElementById("buscarCursoInput").value;
+    /** @type {HTMLInputElement | null} */
+    const inputBusqueda = document.getElementById("buscarCursoInput");
+    if (!inputBusqueda) return;
+
+    const textoInput = inputBusqueda.value;
     const textoNormalizado = _deaccentAndLower(textoInput);
+    /** @type {NodeListOf<HTMLOptionElement>} */
     const opciones = document.querySelectorAll("#cursoSelect option");
     let visibleOptionsCount = 0;
 
     opciones.forEach((opcion) => {
-      const contenidoOpcion = _deaccentAndLower(opcion.textContent); // Normalize option text as well
-      const nombreCursoNormalizado = opcion.dataset.nombreNormalizado; // Get the stored normalized course name
+      const contenidoOpcion = _deaccentAndLower(opcion.textContent); // Normalizar también el texto de la opción
+      const nombreCursoNormalizado = opcion.dataset.nombreNormalizado; // Obtener el nombre normalizado del curso guardado
 
-      // Search in normalized option text (ID, cycle, displayed name) and in the normalized course name
+      // Buscar en el texto normalizado de la opción (ID, ciclo, nombre mostrado) y en el nombre normalizado del curso
       if (
         contenidoOpcion.includes(textoNormalizado) ||
         (nombreCursoNormalizado &&
@@ -40,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Actualizar feedback
+    // Actualizar retroalimentación
     if (searchFeedbackEl) {
       if (textoInput === "") {
         searchFeedbackEl.textContent =
@@ -56,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Adjuntar el listener al input estático definido en index.html
+  /** @type {HTMLInputElement | null} */
   const inputBusquedaStatic = document.getElementById("buscarCursoInput");
   if (inputBusquedaStatic) {
     inputBusquedaStatic.addEventListener("input", buscarCursoEnSelect);

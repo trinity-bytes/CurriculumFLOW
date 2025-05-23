@@ -1,13 +1,31 @@
+/**
+ * Representa un curso en el plan de estudios.
+ */
 class Curso {
+  /**
+   * Crea una instancia de Curso.
+   * @param {number} id - El identificador único del curso.
+   * @param {number} ciclo - El ciclo al que pertenece el curso.
+   */
   constructor(id, ciclo) {
+    /** @type {number} */
     this.id = id;
+    /** @type {number} */
     this.ciclo = ciclo;
+    /** @type {number[]} */
     this.cursosPrerequisito = []; // IDs de cursos que son prerrequisitos para este curso
+    /** @type {number[]} */
     this.cursosEsPrerequisito = []; // IDs de cursos para los que este es prerrequisito
+    /** @type {string} */
     this.nombre = this.generarNombreCurso(id, ciclo); // Nombre ficticio del curso
   }
 
-  // Generar nombres ficticios para los cursos
+  /**
+   * Genera un nombre ficticio para el curso basado en su ID y ciclo.
+   * @param {number} id - El identificador único del curso.
+   * @param {number} ciclo - El ciclo al que pertenece el curso.
+   * @returns {string} El nombre del curso.
+   */
   generarNombreCurso(id, ciclo) {
     const nombresCursos = [
       // Ciclo 1
@@ -75,20 +93,30 @@ class Curso {
     return nombresCursos[id - 1] || `Curso Especializado ${id}`;
   }
 
-  // Métodos para gestionar prerrequisitos
+  /**
+   * Agrega un curso como prerrequisito para este curso.
+   * @param {number} cursoId - El ID del curso prerrequisito.
+   */
   agregarPrerequisito(cursoId) {
     if (!this.cursosPrerequisito.includes(cursoId)) {
       this.cursosPrerequisito.push(cursoId);
     }
   }
 
+  /**
+   * Agrega un curso para el cual este curso es un prerrequisito.
+   * @param {number} cursoId - El ID del curso que tiene a este como prerrequisito.
+   */
   agregarEsPrerequisito(cursoId) {
     if (!this.cursosEsPrerequisito.includes(cursoId)) {
       this.cursosEsPrerequisito.push(cursoId);
     }
   }
 
-  // Representación como texto para mostrar
+  /**
+   * Devuelve una representación en cadena del curso.
+   * @returns {string} Una cadena que representa el curso (ej. "C1 (Ciclo 1)").
+   */
   toString() {
     return `C${this.id} (Ciclo ${this.ciclo})`;
   }

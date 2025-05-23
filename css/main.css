@@ -5,31 +5,31 @@
   --teal-profundo: #008080;
   --teal-mas-oscuro: #004040; /* Tono teal más oscuro para el degradado */
   --coral-vibrante: #ff7f50;
-  --coral-vibrante-suavizado: #ff997a; /* Softer coral for hover effects */
+  --coral-vibrante-suavizado: #ff997a; /* Coral más suave para efectos hover */
   --ambar-dorado: #ffbf00;
   --blanco-puro: #ffffff;
-  --gris-suave: #f8f9fa; /* Similar to old --light-bg */
+  --gris-suave: #f8f9fa; /* Similar al antiguo --light-bg */
   --texto-principal: #333333;
   --texto-secundario: #555555;
 
-  /* Legacy variables (to be phased out or remapped) */
-  --primary-blue: var(--teal-profundo); /* Remap for now */
-  --success-green: var(--coral-vibrante); /* UPDATED to Coral Vibrante */
-  --solid-gray: var(--texto-principal); /* Remap for now */
-  --light-bg: var(--gris-suave); /* Remap for now */
-  --white: var(--blanco-puro); /* Remap for now */
-  --text-muted: var(--texto-secundario); /* Remap for now */
+  /* Variables heredadas (a eliminar o reasignar) */
+  --primary-blue: var(--teal-profundo); /* Reasignado por ahora */
+  --success-green: var(--coral-vibrante); /* ACTUALIZADO a Coral Vibrante */
+  --solid-gray: var(--texto-principal); /* Reasignado por ahora */
+  --light-bg: var(--gris-suave); /* Reasignado por ahora */
+  --white: var(--blanco-puro); /* Reasignado por ahora */
+  --text-muted: var(--texto-secundario); /* Reasignado por ahora */
 
-  /* Font variables */
+  /* Variables de fuentes */
   --font-titulos: "Montserrat", sans-serif;
   --font-cuerpo: "Inter", sans-serif;
 }
 
 /* Tipografías */
 body {
-  font-family: var(--font-cuerpo); /* Updated font */
-  background-color: var(--gris-suave); /* Updated background */
-  color: var(--texto-principal); /* Updated text color */
+  font-family: var(--font-cuerpo); /* Fuente actualizada */
+  background-color: var(--gris-suave); /* Fondo actualizado */
+  color: var(--texto-principal); /* Color de texto actualizado */
 }
 
 h1,
@@ -39,7 +39,7 @@ h4,
 h5,
 h6,
 .navbar-brand {
-  font-family: var(--font-titulos); /* Updated font */
+  font-family: var(--font-titulos); /* Fuente actualizada */
   font-weight: 600;
 }
 
@@ -60,17 +60,17 @@ h6,
 }
 
 .navbar-brand img {
-  max-height: 50px; /* Adjust as needed for your logo isotipo */
+  max-height: 50px; /* Ajustar según sea necesario para el isotipo del logo */
   margin-right: 10px;
   /* filter: drop-shadow(
     0 0 5px rgba(255, 255, 255, 0.7)
-  ); Removed drop shadow for contrast */
+  ); Sombra eliminada para contraste */
 }
 
-/* Remove old gradient if specifically targeted and replace with solid color */
+/* Eliminar gradiente antiguo si se usa específicamente y reemplazar con color sólido */
 .bg-gradient-primary {
-  background: var(--teal-profundo); /* Solid color, remove gradient */
-  /* box-shadow: 0 4px 20px rgba(42, 110, 184, 0.3); Old shadow, remove or update */
+  background: var(--teal-profundo); /* Color sólido, gradiente eliminado */
+  /* box-shadow: 0 4px 20px rgba(42, 110, 184, 0.3); Sombra antigua, eliminar o actualizar */
 }
 
 .navbar-brand {
@@ -79,32 +79,32 @@ h6,
 }
 
 .navbar-subtitle {
-  font-weight: 300; /* Lighter font weight */
-  font-size: 0.75em; /* Smaller font size relative to parent */
-  display: block; /* Ensures it takes its own line if needed or helps with spacing */
-  margin-top: -2px; /* Adjust as needed for vertical alignment */
-  opacity: 0.85 !important; /* Slightly less prominent */
+  font-weight: 300; /* Peso de fuente más ligero */
+  font-size: 0.75em; /* Tamaño de fuente más pequeño relativo al padre */
+  display: block; /* Asegura que tome su propia línea si es necesario o ayuda con el espaciado */
+  margin-top: -2px; /* Ajustar según sea necesario para alineación vertical */
+  opacity: 0.85 !important; /* Ligeramente menos prominente */
 }
 
-/* Hero Section */
+/* Sección Hero */
 .hero-section {
-  background: var(--gris-suave); /* Use a light, neutral background */
-  border-bottom: 3px solid var(--ambar-dorado); /* Accent border with Ambar Dorado */
+  background: var(--gris-suave); /* Usar un fondo claro y neutral */
+  border-bottom: 3px solid var(--ambar-dorado); /* Borde de acento con Ambar Dorado */
   color: var(--texto-principal);
 }
 
 .hero-section h1 {
-  color: var(--teal-profundo); /* Titles in Teal Profundo */
+  color: var(--teal-profundo); /* Títulos en Teal Profundo */
 }
 
 .hero-section p {
-  color: var(--texto-secundario); /* Sub-text in a softer color */
+  color: var(--texto-secundario); /* Subtexto en un color más suave */
 }
 
-/* Cards y componentes */
+/* Tarjetas y componentes */
 .card {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--gris-suave); /* Softer border */
+  border: 1px solid var(--gris-suave); /* Borde más suave */
   border-radius: 12px;
   transition: all 0.3s ease;
   background-color: var(--blanco-puro);
@@ -112,16 +112,16 @@ h6,
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 128, 128, 0.15); /* Shadow based on Teal Profundo */
+  box-shadow: 0 8px 30px rgba(0, 128, 128, 0.15); /* Sombra basada en Teal Profundo */
 }
 
 .card-header {
   background: var(--teal-profundo) !important;
   color: var(--blanco-puro) !important;
-  border-radius: 11px 11px 0 0 !important; /* Adjusted for inner border */
+  border-radius: 11px 11px 0 0 !important; /* Ajustado para borde interno */
   font-weight: 600;
   font-family: var(--font-titulos);
-  border-bottom: 2px solid var(--ambar-dorado); /* Accent with Ambar Dorado */
+  border-bottom: 2px solid var(--ambar-dorado); /* Acento con Ambar Dorado */
 }
 
 .card-title {
@@ -139,7 +139,7 @@ h6,
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem; /* Consistent padding */
+  padding: 0.5rem 1rem; /* Padding consistente */
 }
 
 .btn-primary {
@@ -150,7 +150,7 @@ h6,
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #e66a40; /* Darker Coral */
+  background-color: #e66a40; /* Coral más oscuro */
   border-color: #e66a40;
   color: var(--blanco-puro);
   box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
@@ -165,14 +165,14 @@ h6,
 
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background-color: #e6a800; /* Darker Ambar */
+  background-color: #e6a800; /* Ambar más oscuro */
   border-color: #e6a800;
   color: var(--texto-principal);
   box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
   transform: translateY(-2px);
 }
 
-/* Outline buttons to use Teal Profundo */
+/* Botones Outline para usar Teal Profundo */
 .btn-outline-primary {
   color: var(--teal-profundo);
   border-color: var(--teal-profundo);
@@ -187,7 +187,7 @@ h6,
   box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3);
 }
 
-/* Success button - UPDATED to Coral Vibrante */
+/* Botón Success - ACTUALIZADO a Coral Vibrante */
 .btn-success {
   background-color: var(--coral-vibrante);
   border-color: var(--coral-vibrante);
@@ -196,7 +196,7 @@ h6,
 
 .btn-success:hover,
 .btn-success:focus {
-  background-color: #e66a40; /* Darker Coral */
+  background-color: #e66a40; /* Coral más oscuro */
   border-color: #e66a40;
   color: var(--blanco-puro);
   box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
@@ -217,16 +217,16 @@ h6,
   box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
 }
 
-/* Info button - can use a neutral or accent */
+/* Botón Info - puede usar un color neutral o de acento */
 .btn-info {
-  background-color: var(--texto-secundario); /* Using a neutral gray */
+  background-color: var(--texto-secundario); /* Usando un gris neutral */
   border-color: var(--texto-secundario);
   color: var(--blanco-puro);
 }
 
 .btn-info:hover,
 .btn-info:focus {
-  background-color: #444444; /* Darker gray */
+  background-color: #444444; /* Gris más oscuro */
   border-color: #444444;
   color: var(--blanco-puro);
   box-shadow: 0 4px 15px rgba(85, 85, 85, 0.3);
@@ -247,18 +247,18 @@ h6,
   box-shadow: 0 4px 15px rgba(85, 85, 85, 0.3);
 }
 
-/* Specific button group styling for control panel */
+/* Estilo específico para grupo de botones en panel de control */
 .control-panel .btn-group .btn {
-  margin-right: 5px; /* Add some space between buttons in a group */
+  margin-right: 5px; /* Añadir espacio entre botones en un grupo */
 }
 
 .control-panel .btn-group .btn:last-child {
   margin-right: 0;
 }
 
-/* Stats card mejorada */
+/* Tarjeta de estadísticas mejorada */
 .stats-card {
-  border-left: 4px solid var(--coral-vibrante); /* Accent with Coral Vibrante */
+  border-left: 4px solid var(--coral-vibrante); /* Acento con Coral Vibrante */
   background: var(--blanco-puro);
   padding: 1rem;
   border-radius: 8px;
@@ -277,13 +277,15 @@ h6,
 
 /* Colores personalizados para estadísticas */
 .text-primary {
-  color: var(--teal-profundo) !important; /* Teal for primary text emphasis */
+  color: var(
+    --teal-profundo
+  ) !important; /* Teal para énfasis de texto primario */
 }
 .text-success {
-  color: var(--coral-vibrante) !important; /* UPDATED to Coral Vibrante */
+  color: var(--coral-vibrante) !important; /* ACTUALIZADO a Coral Vibrante */
 }
 
-/* Efectos de hover mejorados - already covered in .btn definitions */
+/* Efectos de hover mejorados - ya cubiertos en definiciones .btn */
 
 /* Acordeones */
 .accordion-item {
@@ -294,7 +296,7 @@ h6,
 }
 
 .accordion-header {
-  border-radius: 7px 7px 0 0; /* Adjusted for inner border */
+  border-radius: 7px 7px 0 0; /* Ajustado para borde interno */
 }
 
 .accordion-button {
@@ -302,18 +304,18 @@ h6,
   font-family: var(--font-cuerpo);
   color: var(--texto-principal);
   background-color: var(--blanco-puro);
-  border-radius: 7px 7px 0 0 !important; /* Ensure radius is applied */
-  box-shadow: none; /* Remove default bootstrap shadow */
+  border-radius: 7px 7px 0 0 !important; /* Asegurar que el radio se aplique */
+  box-shadow: none; /* Eliminar sombra predeterminada de bootstrap */
 }
 
 .accordion-button:not(.collapsed) {
   background-color: var(--gris-suave);
   color: var(--teal-profundo);
-  border-bottom: 1px solid var(--ambar-dorado); /* Accent when open */
+  border-bottom: 1px solid var(--ambar-dorado); /* Acento cuando está abierto */
 }
 
 .accordion-button:focus {
-  box-shadow: 0 0 0 0.25rem rgba(0, 128, 128, 0.25); /* Focus ring with Teal */
+  box-shadow: 0 0 0 0.25rem rgba(0, 128, 128, 0.25); /* Anillo de foco con Teal */
   border-color: var(--teal-profundo);
 }
 
@@ -324,7 +326,7 @@ h6,
 
 /* Lista de grupos */
 .list-group-item {
-  border: 1px solid #eee; /* Lighter border */
+  border: 1px solid #eee; /* Borde más claro */
   border-radius: 8px;
   margin-bottom: 5px;
   transition: all 0.2s ease;
@@ -335,7 +337,7 @@ h6,
 .list-group-item:hover {
   background-color: var(--gris-suave);
   transform: translateX(5px);
-  border-left: 3px solid var(--coral-vibrante); /* Accent on hover */
+  border-left: 3px solid var(--coral-vibrante); /* Acento en hover */
   color: var(--teal-profundo);
 }
 
@@ -353,18 +355,18 @@ h6,
   font-family: var(--font-cuerpo);
 }
 
-/* Re-style specific badges from navbar if needed, or use Bootstrap utility classes */
+/* Re-estilizar badges específicos de la barra de navegación si es necesario, o usar clases de utilidad de Bootstrap */
 .navbar .badge.bg-light {
   background-color: var(--blanco-puro) !important;
-  color: var(--teal-profundo) !important; /* Text color against white */
+  color: var(--teal-profundo) !important; /* Color de texto contra blanco */
 }
 
 .navbar .badge.bg-warning {
   background-color: var(--ambar-dorado) !important;
-  color: var(--texto-principal) !important; /* Text color against ambar */
+  color: var(--texto-principal) !important; /* Color de texto contra ambar */
 }
 
-/* General .bg-light and .bg-warning if used elsewhere */
+/* General .bg-light y .bg-warning si se usan en otros lugares */
 .bg-light {
   background-color: var(--gris-suave) !important;
   color: var(--texto-principal) !important;
@@ -376,12 +378,12 @@ h6,
 }
 
 .bg-success {
-  /* Added for badges like Cytoscape.js */
+  /* Añadido para badges como Cytoscape.js */
   background-color: var(--coral-vibrante) !important;
   color: var(--blanco-puro) !important;
 }
 
-/* Alert personalizado */
+/* Alerta personalizada */
 .alert {
   border-radius: 8px;
   font-family: var(--font-cuerpo);
@@ -395,21 +397,21 @@ h6,
 }
 
 .alert-primary {
-  background-color: rgba(0, 128, 128, 0.1); /* Light Teal */
+  background-color: rgba(0, 128, 128, 0.1); /* Teal claro */
   border-left: 4px solid var(--teal-profundo);
   color: var(--teal-profundo);
 }
 
 .alert-secondary {
-  background-color: rgba(255, 191, 0, 0.1); /* Light Ambar */
+  background-color: rgba(255, 191, 0, 0.1); /* Ambar claro */
   border-left: 4px solid var(--ambar-dorado);
   color: var(--texto-principal);
 }
 
 .alert-success {
-  background-color: rgba(255, 127, 80, 0.1); /* Light Coral */
+  background-color: rgba(255, 127, 80, 0.1); /* Coral claro */
   border-left: 4px solid var(--coral-vibrante);
-  color: var(--coral-vibrante); /* UPDATED to Coral Vibrante */
+  color: var(--coral-vibrante); /* ACTUALIZADO a Coral Vibrante */
 }
 
 .alert-danger {
@@ -418,7 +420,7 @@ h6,
     127,
     80,
     0.1
-  ); /* Light Coral for danger/warning */
+  ); /* Coral claro para peligro/advertencia */
   border-left: 4px solid var(--coral-vibrante);
   color: var(--coral-vibrante);
 }
@@ -444,7 +446,7 @@ h6,
 }
 
 .modal-header .btn-close {
-  filter: invert(1) grayscale(100%) brightness(200%); /* Make close button white */
+  filter: invert(1) grayscale(100%) brightness(200%); /* Hacer botón de cierre blanco */
 }
 
 .modal-body {
@@ -463,17 +465,17 @@ h6,
 .form-select {
   font-family: var(--font-cuerpo);
   border-radius: 8px;
-  border: 1px solid #ced4da; /* Standard Bootstrap border */
-  /* padding: 0.5rem 1rem; Removed general padding */
+  border: 1px solid #ced4da; /* Borde estándar de Bootstrap */
+  /* padding: 0.5rem 1rem; Padding general eliminado */
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .form-control {
-  padding: 0.5rem 1rem; /* Padding for inputs */
+  padding: 0.5rem 1rem; /* Padding para inputs */
 }
 
 .form-select {
-  padding: 0.5rem 2.5rem 0.5rem 1rem; /* Adjusted padding for selects: T R B L */
+  padding: 0.5rem 2.5rem 0.5rem 1rem; /* Padding ajustado para selects: T R B L */
 }
 
 .form-control:focus,
@@ -484,22 +486,22 @@ h6,
 
 .form-label {
   font-family: var(--font-cuerpo);
-  font-weight: 500; /* Slightly bolder labels */
+  font-weight: 500; /* Etiquetas ligeramente más gruesas */
   color: var(--texto-principal);
   margin-bottom: 0.5rem;
 }
 
-/* Placeholder text style */
+/* Estilo de texto de placeholder */
 .form-control::placeholder {
   color: var(--texto-secundario);
   opacity: 0.7;
 }
 
-/* Search feedback text */
+/* Texto de retroalimentación de búsqueda */
 #searchFeedback {
   font-size: 0.875em;
   color: var(--texto-secundario);
-  min-height: 1.5em; /* Ensure space for message */
+  min-height: 1.5em; /* Asegurar espacio para el mensaje */
 }
 
 /* Estilos para la Barra de Scroll Personalizada */
@@ -535,7 +537,7 @@ html {
 
 /* Footer */
 footer {
-  background: var(--teal-profundo); /* Solid Teal Profundo background */
+  background: var(--teal-profundo); /* Fondo sólido Teal Profundo */
   color: var(--blanco-puro);
   padding: 2rem 0;
   margin-top: 3rem;
@@ -543,7 +545,7 @@ footer {
 
 /* Corregir colores del footer */
 footer .text-muted {
-  color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for muted */
+  color: rgba(255, 255, 255, 0.7) !important; /* Texto más claro para muted */
 }
 
 footer small.text-muted {
@@ -552,13 +554,13 @@ footer small.text-muted {
     255,
     255,
     0.9
-  ) !important; /* Slightly more prominent for copyright */
+  ) !important; /* Ligeramente más prominente para copyright */
 }
 
 footer .text-info {
   color: var(
     --ambar-dorado
-  ) !important; /* Ambar Dorado for accents in footer */
+  ) !important; /* Ambar Dorado para acentos en footer */
 }
 
 footer a {
@@ -594,30 +596,30 @@ footer a:hover {
   }
 }
 
-/* Custom style for the technology info box */
+/* Estilo personalizado para la caja de información de tecnología */
 .info-box-tecnologia {
-  /* background-color: #FFF2E6; */ /* Reverted to alert-light default */
-  border-left-width: 0.25rem !important; /* Explicitly set width, similar to border-4 */
-  border-left-style: solid !important; /* Ensure solid style for the left border */
+  /* background-color: #FFF2E6; */ /* Revertido al predeterminado de alert-light */
+  border-left-width: 0.25rem !important; /* Establecer explícitamente el ancho, similar a border-4 */
+  border-left-style: solid !important; /* Asegurar estilo sólido para el borde izquierdo */
   border-left-color: var(
     --coral-vibrante-suavizado
-  ); /* Apply the softened coral color */
-  /* Text color is handled by .text-muted and should provide enough contrast */
+  ); /* Aplicar el color coral suavizado */
+  /* El color del texto es manejado por .text-muted y debería proporcionar suficiente contraste */
 }
 
-/* Custom button style for "Detalles" in course cards */
+/* Estilo de botón personalizado para "Detalles" en las tarjetas de curso */
 .btn-details-custom {
-  background-color: var(--bs-white); /* Standard white background */
-  border-color: var(--bs-warning); /* Golden border */
-  color: #ecb305; /* Darker golden text for better contrast */
+  background-color: var(--bs-white); /* Fondo blanco estándar */
+  border-color: var(--bs-warning); /* Borde dorado */
+  color: #ecb305; /* Texto dorado más oscuro para mejor contraste */
 }
 
 .btn-details-custom:hover,
 .btn-details-custom:focus,
 .btn-details-custom:active {
-  background-color: #f8f9fa; /* Very light gray on interaction (Bootstrap's bg-light) */
-  border-color: #ffa601; /* Darker gold for border on interaction */
-  color: #ffa601; /* Keep text darker golden */
+  background-color: #f8f9fa; /* Gris muy claro en interacción (bg-light de Bootstrap) */
+  border-color: #ffa601; /* Dorado más oscuro para borde en interacción */
+  color: #ffa601; /* Mantener texto dorado más oscuro */
 }
 
 /* Asegurar que los estilos responsivos o finales estén después */

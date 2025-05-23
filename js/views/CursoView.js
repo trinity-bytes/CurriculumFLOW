@@ -1,12 +1,25 @@
 // js/views/CursoView.js
+/**
+ * Clase responsable de renderizar la información de los cursos en la interfaz de usuario.
+ */
 class CursoView {
+  /**
+   * Crea una instancia de CursoView.
+   * @param {HTMLElement} contentBody - El elemento del DOM donde se mostrará el contenido de los cursos.
+   */
   constructor(contentBody) {
+    /** @type {HTMLElement} */
     this.contentBody = contentBody;
+    /** @type {HTMLElement | null} */
     this.modalTitle = document.getElementById("cursoModalTitle");
+    /** @type {HTMLElement | null} */
     this.modalBody = document.getElementById("cursoModalBody");
   }
 
-  // Mostrar todos los cursos organizados por ciclo
+  /**
+   * Muestra todos los cursos del plan de estudios, organizados por ciclo, en tarjetas.
+   * @param {Curriculum} curriculum - La instancia del plan de estudios con los datos de los cursos.
+   */
   mostrarCursos(curriculum) {
     let html = '<div class="row">';
 
@@ -51,7 +64,11 @@ class CursoView {
     this.contentBody.innerHTML = html;
   }
 
-  // Mostrar todos los prerrequisitos - Corrected Logic
+  /**
+   * Muestra una lista de todos los cursos en formato de acordeón, detallando
+   * los prerrequisitos de cada curso y los cursos para los cuales sirve como prerrequisito.
+   * @param {Curriculum} curriculum - La instancia del plan de estudios con los datos de los cursos.
+   */
   mostrarPrerequisitos(curriculum) {
     let html = '<div class="accordion" id="prereqAccordion">';
 
@@ -112,7 +129,11 @@ class CursoView {
     this.contentBody.innerHTML = html;
   }
 
-  // Mostrar información de un curso específico - Corrected Logic
+  /**
+   * Muestra la información detallada de un curso específico en el área de contenido principal.
+   * @param {Curso} curso - El objeto del curso a mostrar.
+   * @param {Curriculum} curriculum - La instancia del plan de estudios para buscar nombres de cursos prerrequisito/siguientes.
+   */
   mostrarInformacionCurso(curso, curriculum) {
     let html = `
       <div class="card shadow-lg">
@@ -172,7 +193,11 @@ class CursoView {
     this.contentBody.innerHTML = html;
   }
 
-  // Nuevo método para mostrar detalles del curso en el modal
+  /**
+   * Muestra los detalles de un curso específico dentro de una ventana modal.
+   * @param {Curso} curso - El objeto del curso cuyos detalles se mostrarán.
+   * @param {Curriculum} curriculum - La instancia del plan de estudios para buscar nombres de cursos prerrequisito/siguientes.
+   */
   mostrarDetallesCursoEnModal(curso, curriculum) {
     if (!this.modalTitle || !this.modalBody) {
       console.error("Elementos del modal no encontrados en el DOM.");

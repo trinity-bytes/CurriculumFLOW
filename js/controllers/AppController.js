@@ -8,13 +8,13 @@ class AppController {
 
     // Inicializar las vistas
     this.cursoView = new CursoView(document.getElementById("contentBody"));
-    this.graphView = new GraphView(); // Corrected instantiation
+    this.graphView = new GraphView(); // Instanciación corregida
 
     // Referencias a elementos DOM
     this.contentTitle = document.getElementById("contentTitle");
     this.cursoSelect = document.getElementById("cursoSelect");
-    this.buscarCursoInput = document.getElementById("buscarCursoInput"); // Added reference
-    this.searchFeedbackEl = document.getElementById("searchFeedback"); // Added reference
+    this.buscarCursoInput = document.getElementById("buscarCursoInput"); // Referencia agregada
+    this.searchFeedbackEl = document.getElementById("searchFeedback"); // Referencia agregada
 
     // Inicializar componentes
     this.inicializarUI();
@@ -32,7 +32,7 @@ class AppController {
     this.curriculum.cursos.forEach((curso) => {
       const option = document.createElement("option");
       option.value = curso.id;
-      // Store the de-accented, lowercase course name for robust searching
+      // Guardar el nombre del curso normalizado (sin acentos, en minúsculas) para búsqueda robusta
       option.dataset.nombreNormalizado = this._deaccentAndLower(curso.nombre);
       option.textContent = `C${curso.id} (${curso.nombre}) - Ciclo ${curso.ciclo}`;
       this.cursoSelect.appendChild(option);
@@ -42,14 +42,14 @@ class AppController {
   resetSearchAndFilters() {
     if (this.buscarCursoInput) {
       this.buscarCursoInput.value = "";
-      // Trigger input event to re-filter/reset the select options via main.js logic
+      // Disparar evento input para re-filtrar/reiniciar las opciones del select mediante la lógica de main.js
       const event = new Event("input", { bubbles: true, cancelable: true });
       this.buscarCursoInput.dispatchEvent(event);
     }
     if (this.cursoSelect) {
-      // No direct reset needed for select as input event on buscarCursoInput handles filtering.
-      // If a specific option should be selected, that logic would go here.
-      // For now, clearing the filter text is the primary action.
+      // No se necesita reinicio directo para el select ya que el evento input en buscarCursoInput maneja el filtrado.
+      // Si se debiera seleccionar una opción específica, esa lógica iría aquí.
+      // Por ahora, limpiar el texto del filtro es la acción principal.
     }
     if (this.searchFeedbackEl) {
       this.searchFeedbackEl.textContent =
@@ -62,7 +62,7 @@ class AppController {
     document
       .getElementById("btnMostrarCursos")
       .addEventListener("click", () => {
-        this.resetSearchAndFilters(); // Added call
+        this.resetSearchAndFilters(); // Llamada agregada
         this.contentTitle.textContent = "Cursos por Ciclo";
         this.cursoView.mostrarCursos(this.curriculum);
         if (this.graphView.graphElement) {
@@ -73,7 +73,7 @@ class AppController {
     document
       .getElementById("btnMostrarPrerequisitos")
       .addEventListener("click", () => {
-        this.resetSearchAndFilters(); // Added call
+        this.resetSearchAndFilters(); // Llamada agregada
         this.contentTitle.textContent = "Relaciones de Prerrequisitos";
         this.cursoView.mostrarPrerequisitos(this.curriculum);
         if (this.graphView.graphElement) {
@@ -82,32 +82,32 @@ class AppController {
       });
 
     document.getElementById("btnMostrarGrafo").addEventListener("click", () => {
-      this.resetSearchAndFilters(); // Added call
+      this.resetSearchAndFilters(); // Llamada agregada
       this.contentTitle.textContent =
         "Visualización del Grafo de Prerrequisitos";
       const contentBody = document.getElementById("contentBody");
-      contentBody.innerHTML = ""; // Clear previous content
+      contentBody.innerHTML = ""; // Limpiar contenido previo
 
-      // Create card structure for the graph, but without its own header
+      // Crear estructura de tarjeta para el grafo, pero sin su propio encabezado
       const card = document.createElement("div");
-      // Add classes for styling, e.g., if you want padding or a border around the graph area itself
-      // For now, let's keep it simple. If GraphView's container needs specific card-like styling,
-      // it can be added there or here.
-      card.className = "mt-3"; // Minimal styling, adjust as needed
+      // Agregar clases para estilos, ej., si se desea padding o un borde alrededor del área del grafo
+      // Por ahora, mantengámoslo simple. Si el contenedor de GraphView necesita un estilo de tarjeta específico,
+      // se puede agregar allí o aquí.
+      card.className = "mt-3"; // Estilo mínimo, ajustar según sea necesario
 
-      // The cardBody will directly be this card, or a new div if more structure is needed.
-      // For simplicity, the graph will be appended directly to this 'card' div.
-      // If you need a distinct card-body for padding, uncomment and adjust:
+      // El cardBody será directamente esta tarjeta, o un nuevo div si se necesita más estructura.
+      // Para simplificar, el grafo se adjuntará directamente a este div 'card'.
+      // Si necesita un card-body distinto para padding, descomente y ajuste:
       // const cardBody = document.createElement("div");
-      // cardBody.className = "card-body"; // Example if you want Bootstrap card padding
+      // cardBody.className = "card-body"; // Ejemplo si desea padding de tarjeta Bootstrap
       // card.appendChild(cardBody);
       // contentBody.appendChild(card);
       // this.graphView.mostrarGrafo(this.curriculum, cardBody);
 
-      contentBody.appendChild(card); // Append the container for the graph
+      contentBody.appendChild(card); // Adjuntar el contenedor para el grafo
 
-      // Now call mostrarGrafo with the 'card' div as the target
-      // GraphView will create its own #cy div inside this target.
+      // Ahora llamar a mostrarGrafo con el div 'card' como destino
+      // GraphView creará su propio div #cy dentro de este destino.
       this.graphView.mostrarGrafo(this.curriculum, card);
     });
 
@@ -126,7 +126,7 @@ class AppController {
                 curso,
                 this.curriculum
               );
-              // Manually show the modal after content is set
+              // Mostrar manualmente el modal después de establecer el contenido
               const cursoModalElement = document.getElementById("cursoModal");
               if (cursoModalElement) {
                 const cursoModal =
