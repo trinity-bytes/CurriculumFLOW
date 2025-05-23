@@ -48,7 +48,22 @@ class GraphView {
         {
           selector: "node",
           style: {
-            "background-color": (n) => this.getColorByCiclo(n.data("ciclo")),
+            "background-color": (ele) => {
+              const ciclo = ele.data("ciclo");
+              const colors = [
+                "#3498db",
+                "#e74c3c",
+                "#2ecc71",
+                "#f39c12",
+                "#9b59b6",
+                "#1abc9c",
+                "#d35400",
+                "#34495e",
+                "#7f8c8d",
+                "#c0392b",
+              ];
+              return colors[(ciclo - 1) % colors.length];
+            },
             label: "data(label)",
             color: "#fff",
             "text-valign": "center",
