@@ -3,59 +3,111 @@ class Curriculum {
     this.cursos = [];
     this.TOTAL_CURSOS = 50;
     this.CICLOS = 10;
+    this.mapaCursos = new Map(); // Helper for quick ID to curso lookup
   }
+
   // Generar los 50 cursos distribuidos en 10 ciclos
   generarCursos() {
     this.cursos = [];
+    this.mapaCursos.clear(); // Clear map before generating
     let ciclo = 1;
     let contador = 0;
 
     for (let i = 1; i <= this.TOTAL_CURSOS; i++) {
-      this.cursos.push(new Curso(i, ciclo));
+      const nuevoCurso = new Curso(i, ciclo);
+      this.cursos.push(nuevoCurso);
+      this.mapaCursos.set(i, nuevoCurso); // Populate map
       contador++;
-      if (contador === 5) {
+      // Ensure ciclo doesn't exceed CICLOS, relevant if TOTAL_CURSOS isn't a perfect multiple or CICLOS changes
+      if (contador === 5 && ciclo < this.CICLOS) {
         contador = 0;
         ciclo++;
       }
     }
   }
 
-  // Generar prerrequisitos aleatorios
+  // Generar prerrequisitos aleatorios - Corrected Logic
   generarRequisitos() {
-    for (const curso of this.cursos) {
-      // Los cursos del ciclo 10 no tienen prerrequisitos
-      if (curso.ciclo === 10) continue;
+    // 0. Clear existing prerequisite relationships for all courses
+    this.cursos.forEach((curso) => {
+      curso.cursosPrerequisito = [];
+      curso.cursosEsPrerequisito = [];
+    });
 
-      // Generar entre 0 y 2 prerrequisitos aleatorios
-      const numPrerequisitos = Math.floor(Math.random() * 3);
+    // 1. Iterate C1-C45 (IDs 1-45). These are 'cursoOrigen' (the ones that can BE prerequisites).
+    for (let idOrigen = 1; idOrigen <= 45; idOrigen++) {
+      const cursoOrigen = this.obtenerCursoPorId(idOrigen);
+      if (!cursoOrigen) continue;
 
-      for (let i = 0; i < numPrerequisitos; i++) {
-        // Generar un ID de curso posterior (ciclo mayor)
-        // Limitamos el rango para simular el comportamiento del código C++
-        const rangoMinimo = curso.id + 5;
-        const rangoMaximo = curso.id + 9;
-        let prerequisitoId =
-          Math.floor(Math.random() * (rangoMaximo - rangoMinimo + 1)) +
-          rangoMinimo;
+      // These courses (C1-C45) can be prerequisites for 0, 1, or 2 other courses.
+      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // Results in 0, 1, or 2
 
-        // Asegurar que no excede el total de cursos
-        if (prerequisitoId > this.TOTAL_CURSOS) continue;
+      let cursosDestinoAsignados = 0;
+      let attemptsTotal = 0; // Safety break for the while loop per cursoOrigen to prevent infinite loops
 
-        // Asegurar que no es el mismo curso
-        if (prerequisitoId !== curso.id) {
-          curso.agregarPrerequisito(prerequisitoId);
-          // Registrar la relación inversa
-          this.obtenerCursoPorId(prerequisitoId).agregarEsPrerequisito(
-            curso.id
-          );
+      // Attempt to find 'numVecesEsPrerequisito' valid destination courses
+      while (
+        cursosDestinoAsignados < numVecesEsPrerequisito &&
+        attemptsTotal < 100
+      ) {
+        attemptsTotal++;
+
+        // Select a potential 'cursoDestino' randomly from all courses
+        const idDestino = Math.floor(Math.random() * this.TOTAL_CURSOS) + 1;
+        const cursoDestino = this.obtenerCursoPorId(idDestino);
+
+        if (!cursoDestino) continue;
+
+        // Conditions for a valid 'cursoDestino':
+        const esMismoCurso = cursoDestino.id === cursoOrigen.id;
+        const esCicloPosterior = cursoDestino.ciclo > cursoOrigen.ciclo;
+        // Courses in Ciclo 1 (IDs 1-5) cannot have prerequisites.
+        const destinoNoEsDeCiclo1 = cursoDestino.ciclo > 1;
+        // Check if cursoOrigen is already a prerequisite for cursoDestino
+        const yaEsPrerequisito = cursoOrigen.cursosEsPrerequisito.includes(
+          cursoDestino.id
+        );
+
+        if (
+          !esMismoCurso &&
+          esCicloPosterior &&
+          destinoNoEsDeCiclo1 &&
+          !yaEsPrerequisito
+        ) {
+          // If all conditions met, establish the prerequisite relationship
+          cursoOrigen.agregarEsPrerequisito(cursoDestino.id);
+          cursoDestino.agregarPrerequisito(cursoOrigen.id);
+          cursosDestinoAsignados++;
         }
+      }
+    }
+
+    // 2. Explicitly ensure C1-C5 (Ciclo 1 courses) have no prerequisites.
+    // This should be guaranteed by 'destinoNoEsDeCiclo1' condition above,
+    // but this serves as an absolute safeguard.
+    for (let i = 1; i <= 5; i++) {
+      const cursoCiclo1 = this.obtenerCursoPorId(i);
+      if (cursoCiclo1) {
+        cursoCiclo1.cursosPrerequisito = [];
+      }
+    }
+
+    // 3. Explicitly ensure C46-C50 (Ciclo 10 courses) are not prerequisites for any other course.
+    // This is guaranteed because the main loop for 'idOrigen' only goes up to 45.
+    // Their 'cursosEsPrerequisito' arrays will naturally remain empty.
+    // For added assurance, we can clear them, though it's redundant with correct loop bounds.
+    for (let i = 46; i <= 50; i++) {
+      const cursoCiclo10 = this.obtenerCursoPorId(i);
+      if (cursoCiclo10) {
+        cursoCiclo10.cursosEsPrerequisito = [];
       }
     }
   }
 
   // Obtener curso por ID
   obtenerCursoPorId(id) {
-    return this.cursos.find((c) => c.id === id);
+    // Use map for efficiency, fallback to find if map isn't populated (should not happen with current flow)
+    return this.mapaCursos.get(id) || this.cursos.find((c) => c.id === id);
   }
 
   // Obtener cursos por ciclo

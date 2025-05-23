@@ -8,7 +8,7 @@ class AppController {
 
     // Inicializar las vistas
     this.cursoView = new CursoView(document.getElementById("contentBody"));
-    this.graphView = new GraphView(document.getElementById("graphContainer"));
+    this.graphView = new GraphView(); // Corrected instantiation
 
     // Referencias a elementos DOM
     this.contentTitle = document.getElementById("contentTitle");
@@ -37,7 +37,10 @@ class AppController {
       .addEventListener("click", () => {
         this.contentTitle.textContent = "Cursos por Ciclo";
         this.cursoView.mostrarCursos(this.curriculum);
-        this.graphView.ocultarGrafo();
+        if (this.graphView.graphElement) {
+          // Check if graphElement exists before trying to hide
+          this.graphView.ocultarGrafo();
+        }
       });
 
     document
@@ -45,14 +48,37 @@ class AppController {
       .addEventListener("click", () => {
         this.contentTitle.textContent = "Relaciones de Prerrequisitos";
         this.cursoView.mostrarPrerequisitos(this.curriculum);
-        this.graphView.ocultarGrafo();
+        if (this.graphView.graphElement) {
+          // Check if graphElement exists
+          this.graphView.ocultarGrafo();
+        }
       });
 
     document.getElementById("btnMostrarGrafo").addEventListener("click", () => {
       this.contentTitle.textContent =
         "Visualización del Grafo de Prerrequisitos";
-      document.getElementById("contentBody").innerHTML = "";
-      this.graphView.mostrarGrafo(this.curriculum);
+      const contentBody = document.getElementById("contentBody");
+      contentBody.innerHTML = ""; // Clear previous content
+
+      // Create card structure
+      const card = document.createElement("div");
+      card.className = "card shadow-sm mt-3";
+
+      const cardHeader = document.createElement("div");
+      // Using a more specific class for the header for potential future styling
+      cardHeader.className = "card-header bg-primary text-white";
+      cardHeader.textContent = "Visualización del Grafo de Prerrequisitos";
+      card.appendChild(cardHeader);
+
+      const cardBody = document.createElement("div");
+      cardBody.className = "card-body";
+      // The graph will be appended here by GraphView's mostrarGrafo method
+      card.appendChild(cardBody);
+
+      contentBody.appendChild(card);
+
+      // Now call mostrarGrafo with the cardBody as the target
+      this.graphView.mostrarGrafo(this.curriculum, cardBody);
     });
 
     // Consulta de curso específico
@@ -62,8 +88,12 @@ class AppController {
         const cursoId = parseInt(this.cursoSelect.value);
         const curso = this.curriculum.obtenerCursoPorId(cursoId);
         this.contentTitle.textContent = `Información de Curso C${cursoId}`;
-        this.cursoView.mostrarInformacionCurso(curso);
-        this.graphView.ocultarGrafo();
+        // Ensure graph is hidden when showing specific course info outside graph view
+        if (this.graphView.graphElement) {
+          this.graphView.ocultarGrafo();
+        }
+        // Display course information in contentBody
+        this.cursoView.mostrarInformacionCurso(curso, this.curriculum);
       });
   }
 }
