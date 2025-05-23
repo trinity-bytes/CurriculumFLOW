@@ -88,9 +88,7 @@ class AppController {
       .getElementById("contentBody")
       .addEventListener("click", (event) => {
         if (event.target.matches(".btnDetalles")) {
-          const cursoId = parseInt(
-            event.target.getAttribute("data-curso-id")
-          );
+          const cursoId = parseInt(event.target.getAttribute("data-curso-id"));
           const curso = this.curriculum.obtenerCursoPorId(cursoId);
           this.contentTitle.textContent = `Detalles del Curso C${cursoId}`;
           this.cursoView.mostrarDetallesCurso(curso, this.curriculum);
