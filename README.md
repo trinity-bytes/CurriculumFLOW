@@ -61,7 +61,7 @@ cd curriculum-flow
 2. **Ver prerrequisitos**: Permite visualizar las relaciones de prerrequisitos entre cursos.
 3. **Consultar curso**: Busca información específica de un curso incluyendo sus prerrequisitos y los cursos que lo tienen como prerrequisito.
 
-### Reglas del sistema
+## 📜 Reglas del sistema
 
 El sistema opera bajo las siguientes reglas de negocio:
 
