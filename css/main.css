@@ -1,21 +1,35 @@
 /* CurriculumFlow - Branding Personalizado */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"); /* Updated to Inter */
 
-/* Variables de colores del branding */
+/* Variables de colores del branding "Teal Energizado" */
 :root {
-  --primary-blue: #2a6eb8;
-  --success-green: #37a06d;
-  --solid-gray: #3e4a5a;
-  --light-bg: #f8f9fa;
-  --white: #ffffff;
-  --text-muted: #6c757d;
+  --teal-profundo: #008080;
+  --teal-mas-oscuro: #004040; /* Tono teal más oscuro para el degradado */
+  --coral-vibrante: #ff7f50;
+  --ambar-dorado: #ffbf00;
+  --blanco-puro: #ffffff;
+  --gris-suave: #f8f9fa; /* Similar to old --light-bg */
+  --texto-principal: #333333;
+  --texto-secundario: #555555;
+
+  /* Legacy variables (to be phased out or remapped) */
+  --primary-blue: var(--teal-profundo); /* Remap for now */
+  --success-green: var(--coral-vibrante); /* UPDATED to Coral Vibrante */
+  --solid-gray: var(--texto-principal); /* Remap for now */
+  --light-bg: var(--gris-suave); /* Remap for now */
+  --white: var(--blanco-puro); /* Remap for now */
+  --text-muted: var(--texto-secundario); /* Remap for now */
+
+  /* Font variables */
+  --font-titulos: "Montserrat", sans-serif;
+  --font-cuerpo: "Inter", sans-serif;
 }
 
 /* Tipografías */
 body {
-  font-family: "Open Sans", sans-serif;
-  background-color: var(--light-bg);
-  color: var(--solid-gray);
+  font-family: var(--font-cuerpo); /* Updated font */
+  background-color: var(--gris-suave); /* Updated background */
+  color: var(--texto-principal); /* Updated text color */
 }
 
 h1,
@@ -25,14 +39,38 @@ h4,
 h5,
 h6,
 .navbar-brand {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-titulos); /* Updated font */
   font-weight: 600;
 }
 
 /* Header y navegación */
+.navbar {
+  /* General navbar styling */
+  background-image: linear-gradient(
+    to right,
+    var(--teal-mas-oscuro),
+    var(--teal-profundo)
+  );
+  /* box-shadow: 0 4px 20px rgba(0, 128, 128, 0.3); Optional: new shadow based on teal */
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link {
+  color: var(--blanco-puro); /* Ensure text is white on dark navbar */
+}
+
+.navbar-brand img {
+  max-height: 50px; /* Adjust as needed for your logo isotipo */
+  margin-right: 10px;
+  /* filter: drop-shadow(
+    0 0 5px rgba(255, 255, 255, 0.7)
+  ); Removed drop shadow for contrast */
+}
+
+/* Remove old gradient if specifically targeted and replace with solid color */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, var(--primary-blue) 0%, #1a5490 100%);
-  box-shadow: 0 4px 20px rgba(42, 110, 184, 0.3);
+  background: var(--teal-profundo); /* Solid color, remove gradient */
+  /* box-shadow: 0 4px 20px rgba(42, 110, 184, 0.3); Old shadow, remove or update */
 }
 
 .navbar-brand {
@@ -40,105 +78,190 @@ h6,
   font-size: 1.5rem;
 }
 
+.navbar-subtitle {
+  font-weight: 300; /* Lighter font weight */
+  font-size: 0.75em; /* Smaller font size relative to parent */
+  display: block; /* Ensures it takes its own line if needed or helps with spacing */
+  margin-top: -2px; /* Adjust as needed for vertical alignment */
+  opacity: 0.85 !important; /* Slightly less prominent */
+}
+
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 3px solid var(--primary-blue);
+  background: var(--gris-suave); /* Use a light, neutral background */
+  border-bottom: 3px solid var(--ambar-dorado); /* Accent border with Ambar Dorado */
+  color: var(--texto-principal);
+}
+
+.hero-section h1 {
+  color: var(--teal-profundo); /* Titles in Teal Profundo */
+}
+
+.hero-section p {
+  color: var(--texto-secundario); /* Sub-text in a softer color */
 }
 
 /* Cards y componentes */
 .card {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: none;
+  border: 1px solid var(--gris-suave); /* Softer border */
   border-radius: 12px;
   transition: all 0.3s ease;
+  background-color: var(--blanco-puro);
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(42, 110, 184, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 128, 128, 0.15); /* Shadow based on Teal Profundo */
 }
 
 .card-header {
-  background: var(--primary-blue) !important;
-  color: white !important;
-  border-radius: 12px 12px 0 0 !important;
+  background: var(--teal-profundo) !important;
+  color: var(--blanco-puro) !important;
+  border-radius: 11px 11px 0 0 !important; /* Adjusted for inner border */
   font-weight: 600;
+  font-family: var(--font-titulos);
+  border-bottom: 2px solid var(--ambar-dorado); /* Accent with Ambar Dorado */
+}
+
+.card-title {
+  font-family: var(--font-titulos);
+  color: var(--teal-profundo);
+}
+
+.card-body {
+  color: var(--texto-principal);
 }
 
 /* Botones personalizados */
+.btn {
+  font-family: var(--font-cuerpo);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem; /* Consistent padding */
+}
+
 .btn-primary {
-  background-color: #3498db;
-  border-color: #3498db;
+  background-color: var(--coral-vibrante);
+  border-color: var(--coral-vibrante);
+  color: var(--blanco-puro);
 }
 
-.btn-primary:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
-}
-
-.btn-outline-primary {
-  color: var(--primary-blue);
-  border-color: var(--primary-blue);
-  font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-  background-color: var(--primary-blue);
-  border-color: var(--primary-blue);
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #e66a40; /* Darker Coral */
+  border-color: #e66a40;
+  color: var(--blanco-puro);
+  box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(42, 110, 184, 0.3);
-}
-
-.btn-outline-success {
-  color: var(--success-green);
-  border-color: var(--success-green);
-  font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-success:hover {
-  background-color: var(--success-green);
-  border-color: var(--success-green);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(55, 160, 109, 0.3);
-}
-
-.btn-outline-info {
-  color: var(--solid-gray);
-  border-color: var(--solid-gray);
-  font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-outline-info:hover {
-  background-color: var(--solid-gray);
-  border-color: var(--solid-gray);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(62, 74, 90, 0.3);
 }
 
 .btn-secondary {
-  background-color: var(--solid-gray);
-  border-color: var(--solid-gray);
-  border-radius: 8px;
-  font-weight: 500;
+  background-color: var(--ambar-dorado);
+  border-color: var(--ambar-dorado);
+  color: var(--texto-principal);
 }
 
-.btn-secondary:hover {
-  background-color: #2c3540;
-  border-color: #2c3540;
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: #e6a800; /* Darker Ambar */
+  border-color: #e6a800;
+  color: var(--texto-principal);
+  box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
   transform: translateY(-2px);
+}
+
+/* Outline buttons to use Teal Profundo */
+.btn-outline-primary {
+  color: var(--teal-profundo);
+  border-color: var(--teal-profundo);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--teal-profundo);
+  border-color: var(--teal-profundo);
+  color: var(--blanco-puro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3);
+}
+
+/* Success button - UPDATED to Coral Vibrante */
+.btn-success {
+  background-color: var(--coral-vibrante);
+  border-color: var(--coral-vibrante);
+  color: var(--blanco-puro);
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #e66a40; /* Darker Coral */
+  border-color: #e66a40;
+  color: var(--blanco-puro);
+  box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-outline-success {
+  color: var(--coral-vibrante);
+  border-color: var(--coral-vibrante);
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:focus {
+  background-color: var(--coral-vibrante);
+  border-color: var(--coral-vibrante);
+  color: var(--blanco-puro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
+}
+
+/* Info button - can use a neutral or accent */
+.btn-info {
+  background-color: var(--texto-secundario); /* Using a neutral gray */
+  border-color: var(--texto-secundario);
+  color: var(--blanco-puro);
+}
+
+.btn-info:hover,
+.btn-info:focus {
+  background-color: #444444; /* Darker gray */
+  border-color: #444444;
+  color: var(--blanco-puro);
+  box-shadow: 0 4px 15px rgba(85, 85, 85, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-outline-info {
+  color: var(--texto-secundario);
+  border-color: var(--texto-secundario);
+}
+
+.btn-outline-info:hover,
+.btn-outline-info:focus {
+  background-color: var(--texto-secundario);
+  border-color: var(--texto-secundario);
+  color: var(--blanco-puro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(85, 85, 85, 0.3);
+}
+
+/* Specific button group styling for control panel */
+.control-panel .btn-group .btn {
+  margin-right: 5px; /* Add some space between buttons in a group */
+}
+
+.control-panel .btn-group .btn:last-child {
+  margin-right: 0;
 }
 
 /* Stats card mejorada */
 .stats-card {
-  border-left: 4px solid var(--primary-blue);
-  background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+  border-left: 4px solid var(--coral-vibrante); /* Accent with Coral Vibrante */
+  background: var(--blanco-puro);
+  padding: 1rem;
+  border-radius: 8px;
 }
 
 .stats-card .h4 {
@@ -148,42 +271,72 @@ h6,
 
 /* Colores personalizados para estadísticas */
 .text-primary {
-  color: var(--primary-blue) !important;
+  color: var(--teal-profundo) !important; /* Teal for primary text emphasis */
 }
 .text-success {
-  color: var(--success-green) !important;
+  color: var(--coral-vibrante) !important; /* UPDATED to Coral Vibrante */
 }
 
-/* Efectos de hover mejorados */
-.btn-outline-primary:hover,
-.btn-outline-success:hover,
-.btn-outline-info:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
+/* Efectos de hover mejorados - already covered in .btn definitions */
 
 /* Acordeones */
-.accordion-button:not(.collapsed) {
-  background-color: rgba(42, 110, 184, 0.1);
-  color: var(--primary-blue);
-  border-color: var(--primary-blue);
+.accordion-item {
+  border: 1px solid var(--gris-suave);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background-color: var(--blanco-puro);
+}
+
+.accordion-header {
+  border-radius: 7px 7px 0 0; /* Adjusted for inner border */
 }
 
 .accordion-button {
   font-weight: 500;
+  font-family: var(--font-cuerpo);
+  color: var(--texto-principal);
+  background-color: var(--blanco-puro);
+  border-radius: 7px 7px 0 0 !important; /* Ensure radius is applied */
+  box-shadow: none; /* Remove default bootstrap shadow */
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--gris-suave);
+  color: var(--teal-profundo);
+  border-bottom: 1px solid var(--ambar-dorado); /* Accent when open */
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 128, 128, 0.25); /* Focus ring with Teal */
+  border-color: var(--teal-profundo);
+}
+
+.accordion-body {
+  color: var(--texto-secundario);
+  padding: 1rem 1.25rem;
 }
 
 /* Lista de grupos */
 .list-group-item {
-  border-radius: 6px;
-  margin-bottom: 2px;
+  border: 1px solid #eee; /* Lighter border */
+  border-radius: 8px;
+  margin-bottom: 5px;
   transition: all 0.2s ease;
+  font-family: var(--font-cuerpo);
+  color: var(--texto-principal);
 }
 
 .list-group-item:hover {
-  background-color: rgba(42, 110, 184, 0.05);
+  background-color: var(--gris-suave);
   transform: translateX(5px);
+  border-left: 3px solid var(--coral-vibrante); /* Accent on hover */
+  color: var(--teal-profundo);
+}
+
+.list-group-item.active {
+  background-color: var(--teal-profundo);
+  border-color: var(--teal-profundo);
+  color: var(--blanco-puro);
 }
 
 /* Badges modernos */
@@ -191,40 +344,225 @@ h6,
   font-weight: 500;
   padding: 0.5em 0.8em;
   border-radius: 6px;
+  font-family: var(--font-cuerpo);
 }
 
+/* Re-style specific badges from navbar if needed, or use Bootstrap utility classes */
+.navbar .badge.bg-light {
+  background-color: var(--blanco-puro) !important;
+  color: var(--teal-profundo) !important; /* Text color against white */
+}
+
+.navbar .badge.bg-warning {
+  background-color: var(--ambar-dorado) !important;
+  color: var(--texto-principal) !important; /* Text color against ambar */
+}
+
+/* General .bg-light and .bg-warning if used elsewhere */
 .bg-light {
-  background-color: #f8f9fa !important;
-  color: var(--solid-gray) !important;
+  background-color: var(--gris-suave) !important;
+  color: var(--texto-principal) !important;
 }
 
 .bg-warning {
-  background-color: #ffc107 !important;
+  background-color: var(--ambar-dorado) !important;
+  color: var(--texto-principal) !important;
+}
+
+.bg-success {
+  /* Added for badges like Cytoscape.js */
+  background-color: var(--coral-vibrante) !important;
+  color: var(--blanco-puro) !important;
 }
 
 /* Alert personalizado */
-.alert-light {
-  background-color: rgba(42, 110, 184, 0.05);
-  border-left: 4px solid var(--primary-blue);
+.alert {
   border-radius: 8px;
+  font-family: var(--font-cuerpo);
+  padding: 1rem 1.25rem;
+}
+
+.alert-light {
+  background-color: var(--gris-suave);
+  border-left: 4px solid var(--teal-profundo);
+  color: var(--texto-principal);
+}
+
+.alert-primary {
+  background-color: rgba(0, 128, 128, 0.1); /* Light Teal */
+  border-left: 4px solid var(--teal-profundo);
+  color: var(--teal-profundo);
+}
+
+.alert-secondary {
+  background-color: rgba(255, 191, 0, 0.1); /* Light Ambar */
+  border-left: 4px solid var(--ambar-dorado);
+  color: var(--texto-principal);
+}
+
+.alert-success {
+  background-color: rgba(255, 127, 80, 0.1); /* Light Coral */
+  border-left: 4px solid var(--coral-vibrante);
+  color: var(--coral-vibrante); /* UPDATED to Coral Vibrante */
+}
+
+.alert-danger {
+  background-color: rgba(
+    255,
+    127,
+    80,
+    0.1
+  ); /* Light Coral for danger/warning */
+  border-left: 4px solid var(--coral-vibrante);
+  color: var(--coral-vibrante);
+}
+
+/* Estilos para el Modal */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background-color: var(--blanco-puro);
+}
+
+.modal-header {
+  background-color: var(--teal-profundo);
+  color: var(--blanco-puro);
+  border-bottom: 2px solid var(--ambar-dorado);
+  border-radius: 11px 11px 0 0;
+}
+
+.modal-header .modal-title {
+  font-family: var(--font-titulos);
+  font-weight: 600;
+}
+
+.modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%); /* Make close button white */
+}
+
+.modal-body {
+  font-family: var(--font-cuerpo);
+  color: var(--texto-principal);
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--gris-suave);
+  padding: 1rem 1.5rem;
+}
+
+/* Estilos para Formularios (Inputs y Selects) */
+.form-control,
+.form-select {
+  font-family: var(--font-cuerpo);
+  border-radius: 8px;
+  border: 1px solid #ced4da; /* Standard Bootstrap border */
+  /* padding: 0.5rem 1rem; Removed general padding */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control {
+  padding: 0.5rem 1rem; /* Padding for inputs */
+}
+
+.form-select {
+  padding: 0.5rem 2.5rem 0.5rem 1rem; /* Adjusted padding for selects: T R B L */
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--teal-profundo);
+  box-shadow: 0 0 0 0.25rem rgba(0, 128, 128, 0.25);
+}
+
+.form-label {
+  font-family: var(--font-cuerpo);
+  font-weight: 500; /* Slightly bolder labels */
+  color: var(--texto-principal);
+  margin-bottom: 0.5rem;
+}
+
+/* Placeholder text style */
+.form-control::placeholder {
+  color: var(--texto-secundario);
+  opacity: 0.7;
+}
+
+/* Search feedback text */
+#searchFeedback {
+  font-size: 0.875em;
+  color: var(--texto-secundario);
+  min-height: 1.5em; /* Ensure space for message */
+}
+
+/* Estilos para la Barra de Scroll Personalizada */
+/* Para navegadores WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px; /* Ancho de la scrollbar vertical */
+  height: 12px; /* Alto de la scrollbar horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gris-suave); /* Color del riel */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--teal-profundo); /* Color del pulgar */
+  border-radius: 10px;
+  border: 3px solid var(--gris-suave); /* Espacio alrededor del pulgar, mismo color que el track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(
+    --coral-vibrante
+  ); /* Color del pulgar al pasar el mouse */
+}
+
+/* Para Firefox */
+/* Firefox soporta scrollbar-width y scrollbar-color */
+html {
+  scrollbar-width: thin; /* Puede ser 'auto', 'thin', o 'none' */
+  scrollbar-color: var(--teal-profundo) var(--gris-suave); /* color del pulgar y color del riel */
 }
 
 /* Footer */
 footer {
-  background: linear-gradient(135deg, var(--solid-gray) 0%, #2c3540 100%);
+  background: var(--teal-profundo); /* Solid Teal Profundo background */
+  color: var(--blanco-puro);
+  padding: 2rem 0;
+  margin-top: 3rem;
 }
 
 /* Corregir colores del footer */
 footer .text-muted {
-  color: #d1d5db !important; /* Gris claro en lugar de oscuro */
+  color: rgba(255, 255, 255, 0.7) !important; /* Lighter text for muted */
 }
 
 footer small.text-muted {
-  color: #f8f9fa !important; /* Blanco suave para el copyright y versión */
+  color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ) !important; /* Slightly more prominent for copyright */
 }
 
 footer .text-info {
-  color: #7dd3fc !important; /* Azul más claro para el ícono */
+  color: var(
+    --ambar-dorado
+  ) !important; /* Ambar Dorado for accents in footer */
+}
+
+footer a {
+  color: var(--ambar-dorado);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--coral-vibrante);
+  text-decoration: underline;
 }
 
 /* Animaciones suaves */
@@ -248,4 +586,15 @@ footer .text-info {
   .navbar-brand {
     font-size: 1.2rem;
   }
+}
+
+/* Custom style for the technology info box */
+.info-box-tecnologia {
+  /* background-color: #FFF2E6; */ /* Reverted to alert-light default */
+  border-left-width: 0.25rem !important; /* Explicitly set width, similar to border-4 */
+  border-left-style: solid !important; /* Ensure solid style for the left border */
+  border-left-color: var(
+    --coral-vibrante-suavizado
+  ) !important; /* Apply the softened coral color */
+  /* Text color is handled by .text-muted and should provide enough contrast */
 }
