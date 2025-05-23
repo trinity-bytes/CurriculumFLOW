@@ -60,40 +60,41 @@ class AppController {
       const contentBody = document.getElementById("contentBody");
       contentBody.innerHTML = ""; // Clear previous content
 
-      // Create card structure
+      // Create card structure for the graph, but without its own header
       const card = document.createElement("div");
-      card.className = "card shadow-sm mt-3";
+      // Add classes for styling, e.g., if you want padding or a border around the graph area itself
+      // For now, let's keep it simple. If GraphView's container needs specific card-like styling,
+      // it can be added there or here.
+      card.className = "mt-3"; // Minimal styling, adjust as needed
 
-      const cardHeader = document.createElement("div");
-      // Using a more specific class for the header for potential future styling
-      cardHeader.className = "card-header bg-primary text-white";
-      cardHeader.textContent = "Visualización del Grafo de Prerrequisitos";
-      card.appendChild(cardHeader);
+      // The cardBody will directly be this card, or a new div if more structure is needed.
+      // For simplicity, the graph will be appended directly to this 'card' div.
+      // If you need a distinct card-body for padding, uncomment and adjust:
+      // const cardBody = document.createElement("div");
+      // cardBody.className = "card-body"; // Example if you want Bootstrap card padding
+      // card.appendChild(cardBody);
+      // contentBody.appendChild(card);
+      // this.graphView.mostrarGrafo(this.curriculum, cardBody);
 
-      const cardBody = document.createElement("div");
-      cardBody.className = "card-body";
-      // The graph will be appended here by GraphView's mostrarGrafo method
-      card.appendChild(cardBody);
+      contentBody.appendChild(card); // Append the container for the graph
 
-      contentBody.appendChild(card);
-
-      // Now call mostrarGrafo with the cardBody as the target
-      this.graphView.mostrarGrafo(this.curriculum, cardBody);
+      // Now call mostrarGrafo with the 'card' div as the target
+      // GraphView will create its own #cy div inside this target.
+      this.graphView.mostrarGrafo(this.curriculum, card);
     });
 
-    // Consulta de curso específico
+    // Evento para el botón de "Detalles" en la lista de cursos (delegación)
     document
-      .getElementById("btnConsultarCurso")
-      .addEventListener("click", () => {
-        const cursoId = parseInt(this.cursoSelect.value);
-        const curso = this.curriculum.obtenerCursoPorId(cursoId);
-        this.contentTitle.textContent = `Información de Curso C${cursoId}`;
-        // Ensure graph is hidden when showing specific course info outside graph view
-        if (this.graphView.graphElement) {
-          this.graphView.ocultarGrafo();
+      .getElementById("contentBody")
+      .addEventListener("click", (event) => {
+        if (event.target.matches(".btnDetalles")) {
+          const cursoId = parseInt(
+            event.target.getAttribute("data-curso-id")
+          );
+          const curso = this.curriculum.obtenerCursoPorId(cursoId);
+          this.contentTitle.textContent = `Detalles del Curso C${cursoId}`;
+          this.cursoView.mostrarDetallesCurso(curso, this.curriculum);
         }
-        // Display course information in contentBody
-        this.cursoView.mostrarInformacionCurso(curso, this.curriculum);
       });
   }
 }
