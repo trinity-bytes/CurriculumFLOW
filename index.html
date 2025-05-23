@@ -1,0 +1,110 @@
+<!-- 
+ Proyecto Aplicación de relaciones de orden parcial - CurriculumFLOW
+
+Problema propuesto:
+	- Suponga que una carrera de la universidad tiene 50 cursos obligatorios.
+	- Defina la relación de orden parcial “prerrequisito”:
+		  a𝑅𝑏 <-> 𝑎 𝑒𝑠 𝑝𝑟𝑒𝑟𝑟𝑒𝑞𝑢𝑖𝑠𝑖𝑡𝑜 𝑑𝑒 𝑏
+	- Debe asumir que cada curso es prerrequisito de si mismo.
+	- Los cursos 𝐶1,𝐶2,𝐶3,𝐶4,𝐶5 son los cursos del primer ciclo, por lo tanto, no tienen prerrequisitos.
+	- Los cursos 𝐶46,𝐶47,𝐶48,𝐶49,𝐶50 son los cursos del décimo ciclo, por lo tanto, no son prerrequisitos
+	- de algún curso.
+	- En forma aleatoria defina que los cursos 𝐶1,𝐶2,𝐶3,………,𝐶44,𝐶45 son prerrequisitos de 0, 1 o 2
+	  cursos.
+	- El programa debe ordenar a los cursos en los 10 ciclos de la carrera.
+ -->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Gestión de Prerrequisitos</title>
+    <link rel="stylesheet" href="lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/graph.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand">Sistema de Gestión de Prerrequisitos</span>
+      </div>
+    </nav>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-3">
+          <!-- Panel de control -->
+          <div class="card">
+            <div class="card-header">Opciones</div>
+            <div class="card-body">
+              <button id="btnMostrarCursos" class="btn btn-primary mb-2 w-100">
+                Mostrar Cursos
+              </button>
+              <button
+                id="btnMostrarPrerequisitos"
+                class="btn btn-primary mb-2 w-100"
+              >
+                Mostrar Prerrequisitos
+              </button>
+              <button id="btnMostrarGrafo" class="btn btn-primary mb-2 w-100">
+                Visualizar Grafo
+              </button>
+              <hr />
+              <div class="form-group">
+                <label for="cursoSelect">Consultar Curso:</label>
+                <select id="cursoSelect" class="form-control"></select>
+                <button
+                  id="btnConsultarCurso"
+                  class="btn btn-secondary mt-2 w-100"
+                >
+                  Consultar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <!-- Contenido principal -->
+          <div id="mainContent" class="card">
+            <div class="card-header" id="contentTitle">Bienvenido</div>
+            <div class="card-body" id="contentBody">
+              <p>Seleccione una opción del menú para comenzar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualización del grafo -->
+    <div id="graphContainer" class="mt-4 d-none">
+      <div id="cy"></div>
+    </div>
+
+    <!-- Modal para detalles de curso -->
+    <div class="modal fade" id="cursoModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cursoModalTitle">Detalles del Curso</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="cursoModalBody">
+            <!-- Contenido dinámico -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="lib/cytoscape.min.js"></script>
+    <script src="js/models/Curso.js"></script>
+    <script src="js/models/Curriculum.js"></script>
+    <script src="js/views/CursoView.js"></script>
+    <script src="js/views/GraphView.js"></script>
+    <script src="js/controllers/AppController.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

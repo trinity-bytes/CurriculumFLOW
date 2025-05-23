@@ -1,0 +1,45 @@
+/* css/main.css */
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+/* Estilos para la vista de ciclos */
+.list-group-item {
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background-color: #e9f7fe;
+}
+
+/* Estilos para acordeones */
+.accordion-button:not(.collapsed) {
+  background-color: #e9f7fe;
+  color: #3498db;
+}
+
+/* Animaciones */
+.card,
+.btn {
+  transition: transform 0.2s;
+}
+
+.card:hover,
+.btn:hover {
+  transform: translateY(-2px);
+}
