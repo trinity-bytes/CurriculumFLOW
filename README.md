@@ -1,13 +1,13 @@
 # CurriculumFlow
 
-![CurriculumFlow Logo](assets/img/logo.png)
+![CurriculumFlow Logo](assets/imgs/logo-isotipo.png)
 
 ## Optimiza las rutas académicas, maximiza el potencial
 
 CurriculumFlow es una aplicación web diseñada para instituciones educativas que necesitan gestionar, visualizar y optimizar planes de estudio considerando relaciones de prerrequisitos entre cursos.
 
 [![Licencia MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0-green.svg)](https://github.com/yourusername/curriculum-flow)
+![Version](https://img.shields.io/badge/Version-1.0-green.svg)
 
 ## 📋 Descripción
 
@@ -42,11 +42,13 @@ Este proyecto nace como solución al problema de organización de mallas curricu
 Este proyecto no requiere instalación de dependencias externas, ya que utiliza JavaScript vanilla y CSS puro.
 
 1. Clona el repositorio:
+
 ```sh
-git clone https://github.com/yourusername/curriculum-flow.git
+git clone https://github.com/trinity-bytes/curriculum-flow.git
 ```
 
 2. Navega al directorio del proyecto:
+
 ```sh
 cd curriculum-flow
 ```
@@ -75,22 +77,26 @@ El sistema opera bajo las siguientes reglas de negocio:
 ```
 /curriculum-flow
 ├── css/
-│   └── styles.css
+│   ├── main.css
+│   └── graph.css
 ├── js/
+│   ├── main.js
 │   ├── models/
 │   │   ├── Curso.js
 │   │   └── Curriculum.js
 │   ├── controllers/
 │   │   └── AppController.js
 │   ├── views/
-│   │   └── UIManager.js
+│   │   ├── CursoView.js
+│   │   └── GraphView.js
 │   └── utils/
-│       └── helpers.js
+│       └── lib/
+│           └── cytoscape.min.js
 ├── assets/
-│   ├── img/
-│   │   └── logo.png
-│   └── fonts/
-└── index.html
+│   ├── imgs/  // Contiene los logos e imágenes de la aplicación
+│   └── fonts/ // Contiene las fuentes personalizadas
+├── index.html
+└── README.md
 ```
 
 ## 🧮 Algoritmos implementados
@@ -101,17 +107,17 @@ El algoritmo genera relaciones de prerrequisitos aleatorias siguiendo las restri
 
 ```javascript
 function generarPrerequisitos() {
-    // Para cada curso desde C1 hasta C45
-    for (let i = 0; i < 45; i++) {
-        // Determinar aleatoriamente cuántos prerrequisitos tendrá (0-2)
-        const numPrerequisitos = Math.floor(Math.random() * 3);
-        
-        // Generar prerrequisitos válidos
-        for (let j = 0; j < numPrerequisitos; j++) {
-            // Lógica para asegurar prerrequisitos válidos
-            // Evitar ciclos y respetar restricciones del problema
-        }
+  // Para cada curso desde C1 hasta C45
+  for (let i = 0; i < 45; i++) {
+    // Determinar aleatoriamente cuántos prerrequisitos tendrá (0-2)
+    const numPrerequisitos = Math.floor(Math.random() * 3);
+
+    // Generar prerrequisitos válidos
+    for (let j = 0; j < numPrerequisitos; j++) {
+      // Lógica para asegurar prerrequisitos válidos
+      // Evitar ciclos y respetar restricciones del problema
     }
+  }
 }
 ```
 
@@ -121,40 +127,26 @@ Implementamos un algoritmo de ordenamiento topológico para asignar cursos a cic
 
 ```javascript
 function asignarCursosACiclos() {
-    const cola = [];
-    const gradoEntrada = Array(50).fill(0);
-    
-    // Calcular grados de entrada
-    // ...
-    
-    // Inicializar cola con cursos sin prerrequisitos
-    // ...
-    
-    // Procesamiento BFS por niveles
-    // ...
-    
-    return ciclosAsignados;
+  const cola = [];
+  const gradoEntrada = Array(50).fill(0);
+
+  // Calcular grados de entrada
+  // ...
+
+  // Inicializar cola con cursos sin prerrequisitos
+  // ...
+
+  // Procesamiento BFS por niveles
+  // ...
+
+  return ciclosAsignados;
 }
 ```
-
-## 👥 Equipo de desarrollo
-
-- **Frontend Lead**: Desarrollo de interfaz y experiencia de usuario
-- **Backend Lead**: Algoritmos y lógica de negocio
-- **UI Developer**: Componentes visuales y diseño responsivo
-- **Algorithm Specialist**: Implementación de ordenamiento topológico
-- **Integration Specialist**: Pruebas y optimización
 
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## 🙏 Agradecimientos
-
-- Universidad Tecnológica Nacional por el caso de estudio original
-- Profesores de Matemática Discreta por la base teórica en relaciones de orden parcial
-- Comunidad de desarrolladores por sus valiosos comentarios y sugerencias
-
 ---
 
-© 2023 CurriculumFlow - Desarrollado como proyecto educativo para demostrar aplicaciones prácticas de algoritmos de ordenamiento topológico.
+© 2025 CurriculumFlow - Desarrollado como proyecto educativo para demostrar aplicaciones prácticas de algoritmos de ordenamiento topológico.
