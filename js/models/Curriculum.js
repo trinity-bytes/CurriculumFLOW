@@ -44,7 +44,32 @@ class Curriculum {
    * Genera las relaciones de prerrequisitos entre los cursos de forma aleatoria,
    * asegurando coherencia (ej. un curso no puede ser prerrequisito de sí mismo o de un ciclo anterior).
    */
-  generarRequisitos() {
+  /**
+   * Genera las relaciones de prerrequisitos con un PRNG opcional por semilla para reproducibilidad.
+   * @param {string|number} [seed]
+   */
+  generarRequisitos(seed) {
+    // PRNG lineal congruente simple para reproducibilidad (suficiente para demo)
+    let _seed = 0;
+    const toSeed = (s) => {
+      if (s === undefined || s === null || s === "") return Date.now();
+      const str = String(s);
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+      }
+      return Math.abs(h);
+    };
+    _seed = toSeed(seed);
+    const rand = () => {
+      // LCG: X_{n+1} = (a X_n + c) mod m
+      const a = 1664525;
+      const c = 1013904223;
+      const m = 2 ** 32;
+      _seed = (a * _seed + c) % m;
+      return _seed / m;
+    };
     // 0. Limpiar las relaciones de prerrequisitos existentes para todos los cursos
     this.cursos.forEach((curso) => {
       curso.cursosPrerequisito = [];
@@ -56,7 +81,7 @@ class Curriculum {
       const cursoOrigen = this.obtenerCursoPorId(idOrigen);
       if (!cursoOrigen) continue; // No debería suceder
 
-      const numVecesEsPrerequisito = Math.floor(Math.random() * 3); // 0, 1, o 2
+      const numVecesEsPrerequisito = Math.floor(rand() * 3); // 0, 1, o 2
       let cursosDestinoAsignados = 0;
       let attemptsTotal = 0; // Prevenir bucles infinitos
 
@@ -66,8 +91,7 @@ class Curriculum {
       ) {
         attemptsTotal++;
 
-        const idDestinoPotencial =
-          Math.floor(Math.random() * this.TOTAL_CURSOS) + 1;
+  const idDestinoPotencial = Math.floor(rand() * this.TOTAL_CURSOS) + 1;
         const cursoDestino = this.obtenerCursoPorId(idDestinoPotencial);
 
         if (!cursoDestino) continue;
@@ -149,30 +173,122 @@ class Curriculum {
    *                      En caso de detectar un ciclo en los prerrequisitos, se emite un error en consola.
    */
   ordenarCursosTopologicamente() {
-    const visitados = new Array(this.TOTAL_CURSOS + 1).fill(false);
-    const enProceso = new Array(this.TOTAL_CURSOS + 1).fill(false);
-    const resultado = [];
-    // Función para DFS
-    const dfs = (cursoId) => {
-      visitados[cursoId] = true;
-      enProceso[cursoId] = true;
-      const curso = this.obtenerCursoPorId(cursoId);
-      for (const preId of curso.cursosPrerequisito) {
-        if (!visitados[preId]) {
-          dfs(preId);
-        } else if (enProceso[preId]) {
-          console.error("¡Ciclo detectado en los prerrequisitos!");
-        }
-      }
-      enProceso[cursoId] = false;
-      resultado.push(cursoId);
-    };
-    // Iniciar DFS para cada curso no visitado
-    for (let i = 1; i <= this.TOTAL_CURSOS; i++) {
-      if (!visitados[i]) {
-        dfs(i);
+    // Topológico usando Kahn sobre aristas (prerequisito -> curso)
+    // Esto evita depender de reverse() y refleja la semántica correcta:
+    // todo prerrequisito aparece antes que el curso que lo requiere.
+    const indeg = new Array(this.TOTAL_CURSOS + 1).fill(0);
+    const adj = new Map();
+    this.cursos.forEach((c) => adj.set(c.id, []));
+
+    // Construir grafo dirigido: pre -> curso
+    this.cursos.forEach((cursoDestino) => {
+      cursoDestino.cursosPrerequisito.forEach((pre) => {
+        adj.get(pre).push(cursoDestino.id);
+        indeg[cursoDestino.id]++;
+      });
+    });
+
+    const q = [];
+    for (let i = 1; i <= this.TOTAL_CURSOS; i++) if (indeg[i] === 0) q.push(i);
+    const orden = [];
+    while (q.length) {
+      const u = q.shift();
+      orden.push(u);
+      for (const v of adj.get(u)) {
+        indeg[v]--;
+        if (indeg[v] === 0) q.push(v);
       }
     }
-    return resultado.reverse();
+
+    if (orden.length !== this.TOTAL_CURSOS) {
+      console.error("¡Ciclo detectado en los prerrequisitos! Orden parcial devuelto.");
+    }
+    return orden;
+  }
+
+  /**
+   * Valida el plan según las reglas del enunciado (10 ciclos, 5 cursos por ciclo, etc.).
+   * No modifica la asignación, solo reporta.
+   * @returns {{ok: boolean, checks: Array<{name: string, ok: boolean, details?: string}>, metrics: Record<string, number>}}
+   */
+  validarPlan() {
+    const checks = [];
+
+    // 1) 10 ciclos, 5 cursos por ciclo
+    for (let ciclo = 1; ciclo <= this.CICLOS; ciclo++) {
+      const count = this.obtenerCursosPorCiclo(ciclo).length;
+      checks.push({
+        name: `Ciclo ${ciclo} tiene 5 cursos`,
+        ok: count === 5,
+        details: `Tiene ${count}`,
+      });
+    }
+
+    // 2) C1–C5 sin prerequisitos
+    for (let i = 1; i <= 5; i++) {
+      const c = this.obtenerCursoPorId(i);
+      checks.push({
+        name: `C${i} sin prerequisitos`,
+        ok: (c?.cursosPrerequisito.length || 0) === 0,
+        details: `Prereqs: ${c?.cursosPrerequisito.length || 0}`,
+      });
+    }
+
+    // 3) C46–C50 no son prerequisito de nadie
+    for (let i = 46; i <= 50; i++) {
+      const c = this.obtenerCursoPorId(i);
+      checks.push({
+        name: `C${i} no es prerequisito de otros`,
+        ok: (c?.cursosEsPrerequisito.length || 0) === 0,
+        details: `Es prereq de: ${c?.cursosEsPrerequisito.length || 0}`,
+      });
+    }
+
+    // 4) Máximo 2 prerequisitos por curso
+    this.cursos.forEach((c) => {
+      checks.push({
+        name: `C${c.id} con <= 2 prerequisitos`,
+        ok: c.cursosPrerequisito.length <= 2,
+        details: `Prereqs: ${c.cursosPrerequisito.length}`,
+      });
+    });
+
+    // 5) Sin ciclos (DAG) usando Kahn
+    const indeg = new Array(this.TOTAL_CURSOS + 1).fill(0);
+    const adj = new Map();
+    this.cursos.forEach((c) => {
+      adj.set(c.id, []);
+    });
+    // arista prerrequisito -> curso
+    this.cursos.forEach((cursoDestino) => {
+      cursoDestino.cursosPrerequisito.forEach((pre) => {
+        adj.get(pre).push(cursoDestino.id);
+        indeg[cursoDestino.id]++;
+      });
+    });
+    const q = [];
+    for (let i = 1; i <= this.TOTAL_CURSOS; i++) if (indeg[i] === 0) q.push(i);
+    let visited = 0;
+    while (q.length) {
+      const u = q.shift();
+      visited++;
+      for (const v of adj.get(u)) {
+        indeg[v]--;
+        if (indeg[v] === 0) q.push(v);
+      }
+    }
+    const dagOk = visited === this.TOTAL_CURSOS;
+    checks.push({ name: "Grafo acíclico (DAG)", ok: dagOk, details: `Visitados: ${visited}` });
+
+    const metrics = {
+      totalCursos: this.TOTAL_CURSOS,
+      ciclos: this.CICLOS,
+      aristas: this.cursos.reduce((acc, c) => acc + c.cursosPrerequisito.length, 0),
+      maxPrereqs: Math.max(...this.cursos.map((c) => c.cursosPrerequisito.length)),
+      maxOut: Math.max(...this.cursos.map((c) => c.cursosEsPrerequisito.length)),
+    };
+
+    const ok = checks.every((c) => c.ok);
+    return { ok, checks, metrics };
   }
 }

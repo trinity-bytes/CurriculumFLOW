@@ -16,7 +16,48 @@
   transition: all 0.3s ease;
 }
 
-/* Controles de zoom */
+/* Controles superpuestos del grafo */
+.graph-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 2px 10px rgba(0, 128, 128, 0.2);
+}
+.graph-controls .btn-ctrl {
+  border: 1px solid var(--teal-profundo);
+  background: var(--blanco-puro);
+  color: var(--teal-profundo);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.graph-controls .btn-ctrl:hover {
+  background: var(--teal-profundo);
+  color: var(--blanco-puro);
+}
+
+/* Tooltip simple del grafo */
+.graph-tooltip {
+  position: absolute;
+  z-index: 1000;
+  background-color: var(--blanco-puro);
+  color: var(--texto-principal);
+  border-left: 3px solid var(--coral-vibrante);
+  border-radius: 6px;
+  font-family: var(--font-cuerpo);
+  padding: 6px 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+.d-none { display: none !important; }
+
+/* Controles de zoom (si se integra el plugin correspondiente) */
 .cy-panzoom {
   position: absolute;
   top: 10px;
@@ -33,7 +74,7 @@
 /* Estos estilos se aplican mediante JavaScript en GraphView.js,
    pero puedes definir algunas clases CSS aquí si lo necesitas */
 
-/* Tooltips del grafo (si los hay) */
+/* Tooltips del grafo (si se integran) */
 .cy-tooltip {
   background-color: var(--blanco-puro);
   color: var(--texto-principal);

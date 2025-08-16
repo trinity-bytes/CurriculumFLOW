@@ -36,7 +36,7 @@ Problema propuesto:
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="css/bootstrap-icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/graph.css" />
+  <link rel="stylesheet" href="css/Graph.css" />
   </head>
   <body>
     <!-- Header mejorado -->
@@ -142,6 +142,14 @@ Problema propuesto:
                   <i class="bi bi-share me-2"></i>
                   Visualización Interactiva
                 </button>
+                <button id="btnValidarPlan" class="btn btn-primary">
+                  <i class="bi bi-check2-circle me-2"></i>
+                  Validar Plan (Reglas 10×5)
+                </button>
+                <button id="btnMostrarOrdenTopologico" class="btn btn-outline-dark">
+                  <i class="bi bi-list-ol me-2"></i>
+                  Ver Orden Topológico
+                </button>
               </div>
 
               <hr class="my-3" />
@@ -181,6 +189,28 @@ Problema propuesto:
               </div>
               <!-- End of Combined Query and Search Section -->
 
+              <!-- Regenerar relaciones (con semilla) -->
+              <div class="mb-3">
+                <label for="seedInput" class="form-label fw-semibold">
+                  <i class="bi bi-shuffle me-1"></i>
+                  Regenerar Relaciones (Semilla opcional)
+                </label>
+                <div class="input-group">
+                  <input type="text" id="seedInput" class="form-control" placeholder="Ej: 2025, my-seed" />
+                  <button id="btnRegenerarRelaciones" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-repeat me-1"></i>
+                    Regenerar
+                  </button>
+                </div>
+                <div class="d-grid mt-2">
+                  <button id="btnCopySeedLink" class="btn btn-outline-primary">
+                    <i class="bi bi-link-45deg me-1"></i>
+                    Copiar enlace con semilla
+                  </button>
+                </div>
+                <div class="form-text">Usa una semilla para obtener el mismo grafo en futuras ejecuciones.</div>
+              </div>
+
               <!-- Información adicional (Tecnología) - Moved Down -->
               <div class="mt-3">
                 <!-- Adjusted margin-top if needed -->
@@ -207,10 +237,8 @@ Problema propuesto:
       </div>
     </div>
 
-    <!-- Visualización del grafo -->
-    <div id="graphContainer" class="mt-4 d-none">
-      <div id="cy"></div>
-    </div>
+  <!-- Visualización del grafo: gestionada dinámicamente por GraphView -->
+  <!-- Contenedor estático removido para evitar IDs duplicados de #cy -->
 
     <!-- Modal para detalles de curso -->
     <div class="modal fade" id="cursoModal" tabindex="-1" aria-hidden="true">

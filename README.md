@@ -67,6 +67,41 @@ cd curriculum-flow
 2. **Ver prerrequisitos**: Permite visualizar las relaciones de prerrequisitos entre cursos.
 3. **Consultar curso**: Busca información específica de un curso incluyendo sus prerrequisitos y los cursos que lo tienen como prerrequisito.
 
+### 🔁 Reproducibilidad con semilla y enlaces compartibles
+
+Para generar siempre el mismo grafo de prerrequisitos puedes usar una semilla:
+
+- En la UI, escribe una semilla en el campo “Regenerar Relaciones (Semilla opcional)” y pulsa “Regenerar”.
+- Pulsa “Copiar enlace con semilla” para obtener una URL que podrás compartir; al abrirla, la app cargará esa misma semilla automáticamente.
+
+También puedes construir la URL manualmente añadiendo `?seed=TU_SEMILLA` al final, por ejemplo:
+
+```
+file:///ruta/a/CurriculumFLOW/index.html?seed=2025
+```
+
+o en un despliegue web:
+
+```
+https://tusitio/curriculumflow/?seed=2025
+```
+
+Notas:
+- La semilla controla únicamente la generación aleatoria de relaciones; los 10 ciclos con 5 cursos cada uno se mantienen fijos.
+- Si no proporcionas semilla, se usará una aleatoria (no reproducible).
+
+### 🧭 Orden topológico (valor agregado)
+
+El orden topológico (OT) es una linealización de un grafo acíclico donde cada curso aparece después de todos sus prerrequisitos. En CurriculumFlow sirve para:
+
+- Verificar consistencia: si no aparecen los 50 cursos, existe un ciclo en los prerrequisitos.
+- Obtener una secuencia válida de cursado que respeta todas las dependencias.
+- Base para métricas del poset: altura (cadena más larga), mínimos/máximos y estimar ancho.
+- Nivelación visual: facilita agrupar por “carriles” o niveles en el grafo.
+- Análisis rápido: cursos muy tardíos suelen arrastrar muchos prerequisitos; los tempranos tienen pocos o ninguno.
+
+Cómo verlo en la app: en el Panel de Control, haz clic en “Ver Orden Topológico”. La lista resultante muestra una secuencia válida (prerrequisitos antes que sus dependientes). Si usas una semilla, el OT será reproducible entre ejecuciones.
+
 ## 📜 Reglas del sistema
 
 El sistema opera bajo las siguientes reglas de negocio:

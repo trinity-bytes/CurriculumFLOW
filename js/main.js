@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Simular clic en el botón "Mostrar Cursos" para cargar la vista inicial
   document.getElementById("btnMostrarCursos").click();
 
+  // Si hay semilla en la URL, establecerla en el input y regenerar
+  const params = new URLSearchParams(window.location.search);
+  const seedFromURL = params.get("seed");
+  const seedInput = document.getElementById("seedInput");
+  if (seedFromURL && seedInput) {
+    seedInput.value = seedFromURL;
+    // Regenerar relaciones con la semilla inicial
+    app.curriculum.generarRequisitos(seedFromURL);
+    // Refrescar la vista actual por defecto: cursos
+    document.getElementById("btnMostrarCursos").click();
+  }
+
   /** @type {HTMLElement | null} */
   const searchFeedbackEl = document.getElementById("searchFeedback");
 
@@ -85,5 +97,29 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn(
       "El campo de búsqueda 'buscarCursoInput' no se encontró en el DOM."
     );
+  }
+
+  // Copiar enlace con semilla
+  const btnCopySeedLink = document.getElementById("btnCopySeedLink");
+  if (btnCopySeedLink) {
+    btnCopySeedLink.addEventListener("click", async () => {
+      const seedVal = /** @type {HTMLInputElement} */ (document.getElementById("seedInput"))?.value || "";
+      const url = new URL(window.location.href);
+      if (seedVal) url.searchParams.set("seed", seedVal);
+      else url.searchParams.delete("seed");
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        const info = document.createElement("div");
+        info.className = "alert alert-success mt-3";
+        info.textContent = "Enlace copiado al portapapeles.";
+        const mainContent = document.getElementById("mainContent");
+        if (mainContent && mainContent.parentElement) {
+          mainContent.parentElement.insertBefore(info, mainContent);
+          setTimeout(() => info.remove(), 3000);
+        }
+      } catch (e) {
+        alert("No se pudo copiar el enlace.");
+      }
+    });
   }
 });

@@ -12,6 +12,10 @@ class GraphView {
     this.cy = null;
     /** @type {HTMLElement | null} */
     this.graphElement = null;
+  /** @type {HTMLElement | null} */
+  this.controlsElement = null;
+  /** @type {HTMLElement | null} */
+  this.tooltipEl = null;
   }
 
   /**
@@ -40,7 +44,22 @@ class GraphView {
 
     // Añadir el nuevo grafo al elemento destino especificado
     targetElement.innerHTML = ""; // Limpiar el elemento destino (ej. cardBody)
+    // Asegurar posicionamiento relativo para overlays
+    targetElement.style.position = targetElement.style.position || "relative";
     targetElement.appendChild(this.graphElement); // Añadir el div #cy
+
+    // Crear controles de zoom/fit/clear highlight
+    this.controlsElement = document.createElement("div");
+    this.controlsElement.className = "graph-controls";
+    this.controlsElement.innerHTML = `
+      <button type="button" class="btn-ctrl" data-action="zoom-in" title="Acercar">+</button>
+      <button type="button" class="btn-ctrl" data-action="zoom-out" title="Alejar">−</button>
+      <button type="button" class="btn-ctrl" data-action="fit" title="Ajustar a vista">⤢</button>
+      <button type="button" class="btn-ctrl" data-action="clear" title="Limpiar resaltado">✕</button>
+      <button type="button" class="btn-ctrl" data-action="export-png" title="Descargar PNG">PNG</button>
+      <button type="button" class="btn-ctrl" data-action="export-svg" title="Descargar SVG">SVG</button>
+    `;
+    targetElement.appendChild(this.controlsElement);
 
     // Preparar los datos para Cytoscape
     const nodes = [];
@@ -89,7 +108,7 @@ class GraphView {
         nodes: nodes,
         edges: edges,
       },
-      style: [
+  style: [
         {
           selector: "node",
           style: {
@@ -106,7 +125,7 @@ class GraphView {
             height: "50px",
             shape: "ellipse",
             "border-width": 2,
-            "border-color": "var(--solid-gray)", // Usar color de la marca
+            "border-color": "#333333", // Color sólido en lugar de variable CSS
             "text-wrap": "wrap",
             "text-max-width": "40px",
           },
@@ -115,17 +134,40 @@ class GraphView {
           selector: "edge",
           style: {
             width: 2.5,
-            "line-color": "var(--solid-gray)", // Usar color de la marca
-            "target-arrow-color": "var(--solid-gray)", // Usar color de la marca
+            "line-color": "#555555", // Color sólido en lugar de variable CSS
+            "target-arrow-color": "#555555",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
             "arrow-scale": 1.5,
           },
         },
+        // Resaltado y atenuación
+        {
+          selector: ".faded",
+          style: {
+            opacity: 0.15,
+          },
+        },
+        {
+          selector: ".highlighted",
+          style: {
+            "border-color": "#ff7f50",
+            "border-width": 4,
+            "background-color": "#ff997a",
+          },
+        },
+        {
+          selector: "edge.highlighted",
+          style: {
+            width: 4,
+            "line-color": "#ff7f50",
+            "target-arrow-color": "#ff7f50",
+          },
+        },
         {
           selector: "node:selected",
           style: {
-            "border-color": "var(--primary-blue)",
+            "border-color": "#2A6EB8",
             "border-width": 4,
             "background-color": "#A0D3F9", // Azul más claro para el nodo seleccionado
           },
@@ -133,8 +175,8 @@ class GraphView {
         {
           selector: "edge:selected",
           style: {
-            "line-color": "var(--primary-blue)",
-            "target-arrow-color": "var(--primary-blue)",
+            "line-color": "#2A6EB8",
+            "target-arrow-color": "#2A6EB8",
             width: 4,
           },
         },
@@ -152,30 +194,77 @@ class GraphView {
     this.cy.resize();
     this.cy.fit();
 
-    // Tooltip básico al pasar el mouse para el nombre del nodo
-    this.cy.nodes().on("mouseover", (event) => {
-      const node = event.target;
-      node.popperRef = node.popper({
-        content: () => {
-          const div = document.createElement("div");
-          div.innerHTML = `<strong>${node.data(
-            "nombreCompleto"
-          )}</strong><br>Ciclo: ${node.data("ciclo")}`;
-          // Añadir una clase para estilizar el tooltip mediante CSS
-          div.classList.add("graph-tooltip");
-          document.body.appendChild(div);
-          return div;
-        },
-      });
-    });
+    // Tooltip simple: pequeño div absoluto dentro del target
+    this.tooltipEl = document.createElement("div");
+    this.tooltipEl.className = "graph-tooltip d-none";
+    targetElement.appendChild(this.tooltipEl);
 
-    this.cy.nodes().on("mouseout", (event) => {
-      const node = event.target;
-      if (node.popperRef) {
-        node.popperRef.destroy();
-        node.popperRef = null;
+    const showTooltip = (node, evt) => {
+      const nombre = node.data("nombreCompleto");
+      const ciclo = node.data("ciclo");
+      this.tooltipEl.innerHTML = `<strong>${nombre}</strong><br/>Ciclo: ${ciclo}`;
+      const pos = evt.renderedPosition || node.renderedPosition();
+      // Posicionar con ligero offset
+      this.tooltipEl.style.left = `${pos.x + 12}px`;
+      this.tooltipEl.style.top = `${pos.y + 12}px`;
+      this.tooltipEl.classList.remove("d-none");
+    };
+    const hideTooltip = () => {
+      if (this.tooltipEl) this.tooltipEl.classList.add("d-none");
+    };
+
+    this.cy.on("mouseover", "node", (evt) => showTooltip(evt.target, evt));
+    this.cy.on("mouseout", "node", hideTooltip);
+
+    // Resaltado de vecinos y emisión de evento para abrir modal
+    const clearHighlight = () => {
+      if (!this.cy) return;
+      this.cy.elements().removeClass("faded highlighted");
+    };
+
+    const highlightNeighborhood = (node) => {
+      if (!this.cy) return;
+      const neighborhood = node.closedNeighborhood();
+      this.cy.elements().addClass("faded");
+      neighborhood.removeClass("faded");
+      node.addClass("highlighted");
+      neighborhood.edges().addClass("highlighted");
+    };
+
+    this.cy.on("tap", (evt) => {
+      if (evt.target === this.cy) {
+        clearHighlight();
+        hideTooltip();
       }
     });
+
+    this.cy.on("tap", "node", (evt) => {
+      const node = evt.target;
+      clearHighlight();
+      highlightNeighborhood(node);
+      hideTooltip();
+      // Emitir evento global para que AppController abra el modal
+      const idStr = node.id(); // 'c12'
+      const cursoId = parseInt(idStr.replace(/^c/, ""), 10);
+      document.dispatchEvent(
+        new CustomEvent("graph:nodeClick", { detail: { cursoId } })
+      );
+    });
+
+    // Acciones de controles
+    if (this.controlsElement) {
+      this.controlsElement.addEventListener("click", (e) => {
+        const btn = e.target.closest(".btn-ctrl");
+        if (!btn || !this.cy) return;
+        const action = btn.getAttribute("data-action");
+        if (action === "zoom-in") this.cy.zoom(this.cy.zoom() * 1.2);
+        if (action === "zoom-out") this.cy.zoom(this.cy.zoom() / 1.2);
+  if (action === "fit") this.cy.fit();
+  if (action === "clear") clearHighlight();
+  if (action === "export-png") this.exportPNG();
+  if (action === "export-svg") this.exportSVG();
+      });
+    }
   }
 
   /**
@@ -214,5 +303,39 @@ class GraphView {
       this.cy.destroy();
       this.cy = null;
     }
+    if (this.controlsElement && this.controlsElement.parentElement) {
+      this.controlsElement.parentElement.removeChild(this.controlsElement);
+      this.controlsElement = null;
+    }
+    if (this.tooltipEl && this.tooltipEl.parentElement) {
+      this.tooltipEl.parentElement.removeChild(this.tooltipEl);
+      this.tooltipEl = null;
+    }
+  }
+
+  /** Exporta el grafo como PNG y dispara la descarga */
+  exportPNG() {
+    if (!this.cy) return;
+    const png64 = this.cy.png({ full: true, output: "blob" });
+    this._downloadBlob(png64, `curriculumflow-grafo.png`);
+  }
+
+  /** Exporta el grafo como SVG y dispara la descarga */
+  exportSVG() {
+    if (!this.cy) return;
+    const svgBlob = new Blob([this.cy.svg({ full: true })], { type: "image/svg+xml;charset=utf-8" });
+    this._downloadBlob(svgBlob, `curriculumflow-grafo.svg`);
+  }
+
+  /** Utilidad para descargar un Blob con un nombre */
+  _downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 }
