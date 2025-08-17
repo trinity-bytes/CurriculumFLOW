@@ -96,20 +96,9 @@ cd CurriculumFLOW
 La aplicación está publicada en GitHub Pages. Accede con una URL del tipo:
 
 ```
-https://<usuario>.github.io/<repo>/
-```
-
-Ejemplo (ajusta con tu usuario y nombre de repo):
-
-```
 https://trinity-bytes.github.io/CurriculumFLOW/
 ```
 
-Sugerencia: agrega `?seed=2025` para probar reproducibilidad del grafo. Enlace directo de prueba:
-
-```
-https://trinity-bytes.github.io/CurriculumFLOW/?seed=2025
-```
 
 ### 🔁 Reproducibilidad con semilla y enlaces compartibles
 
