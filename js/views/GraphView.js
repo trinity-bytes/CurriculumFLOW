@@ -16,6 +16,16 @@ class GraphView {
   this.controlsElement = null;
   /** @type {HTMLElement | null} */
   this.tooltipEl = null;
+  /** @type {boolean} */
+  this.usarHasse = false;
+  /** @type {HTMLElement | null} */
+  this.metricsEl = null;
+  /** @type {HTMLElement | null} */
+  this.lanesEl = null;
+  /** @type {boolean} */
+  this.mostrarCarriles = false;
+  /** @type {(e: KeyboardEvent) => void | null} */
+  this._keydownHandler = null;
   }
 
   /**
@@ -35,8 +45,10 @@ class GraphView {
     }
 
     // Crear el contenedor del grafo dinámicamente
-    this.graphElement = document.createElement("div");
+  this.graphElement = document.createElement("div");
     this.graphElement.id = "cy";
+  this.graphElement.setAttribute('role', 'application');
+  this.graphElement.setAttribute('aria-label', 'Grafo de prerrequisitos');
     this.graphElement.style.width = "100%";
     this.graphElement.style.height = "600px"; // Altura por defecto, puede hacerse responsiva
     // Se eliminaron las adiciones de classList como "mt-3", "border", etc.
@@ -51,15 +63,36 @@ class GraphView {
     // Crear controles de zoom/fit/clear highlight
     this.controlsElement = document.createElement("div");
     this.controlsElement.className = "graph-controls";
+    this.controlsElement.setAttribute('role', 'toolbar');
+    this.controlsElement.setAttribute('aria-label', 'Controles del grafo');
     this.controlsElement.innerHTML = `
-      <button type="button" class="btn-ctrl" data-action="zoom-in" title="Acercar">+</button>
-      <button type="button" class="btn-ctrl" data-action="zoom-out" title="Alejar">−</button>
-      <button type="button" class="btn-ctrl" data-action="fit" title="Ajustar a vista">⤢</button>
-      <button type="button" class="btn-ctrl" data-action="clear" title="Limpiar resaltado">✕</button>
-      <button type="button" class="btn-ctrl" data-action="export-png" title="Descargar PNG">PNG</button>
-      <button type="button" class="btn-ctrl" data-action="export-svg" title="Descargar SVG">SVG</button>
+      <button type="button" class="btn-ctrl" data-action="zoom-in" title="Acercar" aria-label="Acercar (Zoom in)">+</button>
+      <button type="button" class="btn-ctrl" data-action="zoom-out" title="Alejar" aria-label="Alejar (Zoom out)">−</button>
+      <button type="button" class="btn-ctrl" data-action="fit" title="Ajustar a vista" aria-label="Ajustar a la vista">⤢</button>
+      <button type="button" class="btn-ctrl" data-action="clear" title="Limpiar resaltado" aria-label="Limpiar resaltado">✕</button>
+      <button type="button" class="btn-ctrl" data-action="export-png" title="Descargar PNG" aria-label="Descargar como PNG">PNG</button>
+      <button type="button" class="btn-ctrl" data-action="export-svg" title="Descargar SVG" aria-label="Descargar como SVG">SVG</button>
+      <button type="button" class="btn-ctrl" data-action="toggle-hasse" aria-pressed="false" title="Activar/Desactivar Hasse" aria-label="Alternar Hasse">H</button>
+      <button type="button" class="btn-ctrl" data-action="toggle-lanes" aria-pressed="false" title="Mostrar/Ocultar Carriles" aria-label="Alternar carriles">L</button>
     `;
     targetElement.appendChild(this.controlsElement);
+
+    // Reflejar estado inicial del toggle Hasse en el botón
+    const hasseBtn = this.controlsElement.querySelector('[data-action="toggle-hasse"]');
+    if (hasseBtn) {
+      hasseBtn.classList.toggle('active', this.usarHasse);
+      hasseBtn.textContent = this.usarHasse ? 'H✓' : 'H';
+      hasseBtn.setAttribute('title', this.usarHasse ? 'Hasse activado' : 'Hasse desactivado');
+      hasseBtn.setAttribute('aria-pressed', String(this.usarHasse));
+    }
+    const lanesBtn = this.controlsElement.querySelector('[data-action="toggle-lanes"]');
+    if (lanesBtn) {
+      lanesBtn.classList.toggle('active', this.mostrarCarriles);
+      lanesBtn.textContent = this.mostrarCarriles ? 'L✓' : 'L';
+      lanesBtn.setAttribute('title', this.mostrarCarriles ? 'Carriles activados' : 'Carriles desactivados');
+      lanesBtn.setAttribute('aria-pressed', String(this.mostrarCarriles));
+    }
+  // sin botón de alineación separado; la alineación se aplica con carriles
 
     // Preparar los datos para Cytoscape
     const nodes = [];
@@ -78,30 +111,39 @@ class GraphView {
       });
     });
 
-    // Crear aristas (relaciones de prerrequisito)
-    // Corregido: Una arista va DESDE un prerrequisito HACIA el curso que lo requiere.
-    // cursoOrigen.cursosEsPrerequisito.forEach((idCursoDestino) => {
-    //   edges.push({
-    //     data: {
-    //       id: `e${cursoOrigen.id}-${idCursoDestino}`,
-    //       source: `c${cursoOrigen.id}`, // Origen es el prerrequisito
-    //       target: `c${idCursoDestino}`, // Destino es el curso que necesita el prerrequisito
-    //     },
-    //   });
-    // });
-    curriculum.cursos.forEach((cursoDestino) => {
-      cursoDestino.cursosPrerequisito.forEach((idCursoOrigen) => {
-        edges.push({
-          data: {
-            id: `e${idCursoOrigen}-${cursoDestino.id}`,
-            source: `c${idCursoOrigen}`, // Origen es el curso prerrequisito
-            target: `c${cursoDestino.id}`, // Destino es el curso que tiene este prerrequisito
-          },
-        });
+    // Crear aristas: completo o Hasse según toggle
+    const pares = this.usarHasse
+      ? curriculum.hasseAristas()
+      : curriculum.obtenerAristas();
+    pares.forEach(([u, v]) => {
+      edges.push({
+        data: {
+          id: `e${u}-${v}`,
+          source: `c${u}`,
+          target: `c${v}`,
+        },
       });
     });
 
-    // Inicializar Cytoscape
+    // Carriles por ciclo (opcional, debajo del canvas)
+    if (this.mostrarCarriles) {
+      this.lanesEl = document.createElement('div');
+      this.lanesEl.className = 'graph-lanes';
+      this.lanesEl.setAttribute('role', 'img');
+      this.lanesEl.setAttribute('aria-label', 'Carriles por ciclo, fondo decorativo');
+      for (let ciclo = 1; ciclo <= 10; ciclo++) {
+        const lane = document.createElement('div');
+        lane.className = 'graph-lane';
+        const label = document.createElement('div');
+        label.className = 'lane-label';
+        label.textContent = `Ciclo ${ciclo}`;
+        lane.appendChild(label);
+        this.lanesEl.appendChild(lane);
+      }
+      targetElement.appendChild(this.lanesEl);
+    }
+
+  // Inicializar Cytoscape
     this.cy = cytoscape({
       container: this.graphElement, // Usar el elemento creado dinámicamente
       elements: {
@@ -139,6 +181,13 @@ class GraphView {
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
             "arrow-scale": 1.5,
+          },
+        },
+        {
+          selector: "edge.lanes-mode",
+          style: {
+            "line-opacity": 0.6,
+            "target-arrow-opacity": 0.6,
           },
         },
         // Resaltado y atenuación
@@ -192,14 +241,69 @@ class GraphView {
     });
 
     this.cy.resize();
-    this.cy.fit();
+    if (!this.mostrarCarriles) {
+      this.cy.fit();
+    }
+
+    // Ajustar altura de carriles al alto real del canvas
+    if (this.mostrarCarriles && this.lanesEl) {
+      requestAnimationFrame(() => {
+        const h = this.graphElement?.clientHeight || 600;
+        this.lanesEl.style.height = `${h}px`;
+      });
+    }
+
+    // Si carriles activos: alinear nodos por ciclo (Y fijo) y distribuir X equiespaciado por ciclo
+    if (this.mostrarCarriles && this.cy) {
+      const total = 10;
+  // Usar dimensiones reales del viewport para centrar bien en franjas
+  const bbox = this.cy.extent();
+  const w = this.graphElement?.clientWidth || (bbox.x2 - bbox.x1) || 1000;
+  const h = this.graphElement?.clientHeight || (bbox.y2 - bbox.y1) || 600;
+  const laneH = h / total;
+  const yFor = (ciclo) => laneH * (ciclo - 0.5);
+      // Agrupar por ciclo y ordenar por ID dentro de cada ciclo
+      const grupos = new Map();
+      for (let c = 1; c <= 10; c++) grupos.set(c, []);
+      this.cy.nodes().forEach((n) => {
+        const ciclo = n.data('ciclo');
+        grupos.get(ciclo).push(n);
+      });
+      grupos.forEach((arr) => {
+        arr.sort((a, b) => {
+          const ai = parseInt(String(a.id()).replace(/^c/, ''), 10);
+          const bi = parseInt(String(b.id()).replace(/^c/, ''), 10);
+          return ai - bi;
+        });
+      });
+      const xPaddingLeft = 100; // espacio para etiquetas de carril
+      const xPaddingRight = 40;
+      const innerW = Math.max(200, w - xPaddingLeft - xPaddingRight);
+      this.cy.batch(() => {
+        for (let c = 1; c <= 10; c++) {
+          const fila = grupos.get(c) || [];
+          const n = fila.length || 1;
+          const step = innerW / (n + 1);
+          fila.forEach((node, i) => {
+            const x = xPaddingLeft + step * (i + 1);
+            const y = yFor(c);
+            node.position({ x, y });
+          });
+        }
+        this.cy.edges().addClass("lanes-mode");
+      });
+  // Alinear viewport con overlay: evitar fit para no desfasar las franjas
+  this.cy.zoom(1);
+  this.cy.pan({ x: 0, y: 0 });
+    }
 
     // Tooltip simple: pequeño div absoluto dentro del target
-    this.tooltipEl = document.createElement("div");
-    this.tooltipEl.className = "graph-tooltip d-none";
+  this.tooltipEl = document.createElement("div");
+  this.tooltipEl.className = "graph-tooltip d-none";
+  this.tooltipEl.setAttribute('role', 'tooltip');
     targetElement.appendChild(this.tooltipEl);
 
-    const showTooltip = (node, evt) => {
+  const showTooltip = (node, evt) => {
       const nombre = node.data("nombreCompleto");
       const ciclo = node.data("ciclo");
       this.tooltipEl.innerHTML = `<strong>${nombre}</strong><br/>Ciclo: ${ciclo}`;
@@ -217,19 +321,8 @@ class GraphView {
     this.cy.on("mouseout", "node", hideTooltip);
 
     // Resaltado de vecinos y emisión de evento para abrir modal
-    const clearHighlight = () => {
-      if (!this.cy) return;
-      this.cy.elements().removeClass("faded highlighted");
-    };
-
-    const highlightNeighborhood = (node) => {
-      if (!this.cy) return;
-      const neighborhood = node.closedNeighborhood();
-      this.cy.elements().addClass("faded");
-      neighborhood.removeClass("faded");
-      node.addClass("highlighted");
-      neighborhood.edges().addClass("highlighted");
-    };
+  const clearHighlight = () => this.clearHighlight();
+  const highlightNeighborhood = (node) => this.highlightNeighborhood(node);
 
     this.cy.on("tap", (evt) => {
       if (evt.target === this.cy) {
@@ -252,7 +345,21 @@ class GraphView {
     });
 
     // Acciones de controles
-    if (this.controlsElement) {
+    // Métricas del poset (mínimos, máximos, altura) en una esquina
+  this.metricsEl = document.createElement("div");
+  this.metricsEl.className = "graph-metrics";
+  this.metricsEl.setAttribute('role', 'status');
+  this.metricsEl.setAttribute('aria-live', 'polite');
+  this.metricsEl.style.right = "12px";
+  this.metricsEl.style.left = "auto";
+  // Colocar debajo de los controles: 12px (controles) + alto aprox.
+  this.metricsEl.style.top = "58px";
+  this.metricsEl.style.zIndex = 1001; // debajo de controles
+  const m = curriculum.calcularMetricasPoset();
+  this.metricsEl.innerHTML = `<strong>Poset</strong><br/>Mín: ${m.minimos.length} · Máx: ${m.maximos.length} · Altura: ${m.altura} · Hasse: ${this.usarHasse ? 'Sí' : 'No'}`;
+    targetElement.appendChild(this.metricsEl);
+
+  if (this.controlsElement) {
       this.controlsElement.addEventListener("click", (e) => {
         const btn = e.target.closest(".btn-ctrl");
         if (!btn || !this.cy) return;
@@ -263,8 +370,50 @@ class GraphView {
   if (action === "clear") clearHighlight();
   if (action === "export-png") this.exportPNG();
   if (action === "export-svg") this.exportSVG();
+  if (action === "toggle-hasse") {
+    this.usarHasse = !this.usarHasse;
+    // Toggle aria-pressed para accesibilidad
+    btn.setAttribute('aria-pressed', String(this.usarHasse));
+    // Re-renderizar usando el mismo targetElement
+    const parent = this.graphElement?.parentElement || targetElement;
+    this.mostrarGrafo(curriculum, parent);
+  }
+  if (action === "toggle-lanes") {
+    this.mostrarCarriles = !this.mostrarCarriles;
+    btn.setAttribute('aria-pressed', String(this.mostrarCarriles));
+    const parent = this.graphElement?.parentElement || targetElement;
+    this.mostrarGrafo(curriculum, parent);
+  }
+      });
+      // Soporte básico con teclado: flechas para moverse, Enter para activar
+      const toolbarButtons = Array.from(this.controlsElement.querySelectorAll('.btn-ctrl'));
+      this.controlsElement.addEventListener('keydown', (ev) => {
+        const idx = toolbarButtons.findIndex(b => b === document.activeElement);
+        if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          const next = toolbarButtons[(idx + 1 + toolbarButtons.length) % toolbarButtons.length];
+          if (next) next.focus();
+        } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+          ev.preventDefault();
+          const prev = toolbarButtons[(idx - 1 + toolbarButtons.length) % toolbarButtons.length];
+          if (prev) prev.focus();
+        } else if (ev.key === 'Home') {
+          ev.preventDefault();
+          const first = toolbarButtons[0];
+          if (first) first.focus();
+        } else if (ev.key === 'End') {
+          ev.preventDefault();
+          const last = toolbarButtons[toolbarButtons.length - 1];
+          if (last) last.focus();
+        }
       });
     }
+
+    // ESC para limpiar resaltado
+    this._keydownHandler = (ev) => {
+      if (ev.key === "Escape") this.clearHighlight();
+    };
+    document.addEventListener("keydown", this._keydownHandler);
   }
 
   /**
@@ -307,10 +456,48 @@ class GraphView {
       this.controlsElement.parentElement.removeChild(this.controlsElement);
       this.controlsElement = null;
     }
+    if (this.lanesEl && this.lanesEl.parentElement) {
+      this.lanesEl.parentElement.removeChild(this.lanesEl);
+      this.lanesEl = null;
+    }
+    if (this.metricsEl && this.metricsEl.parentElement) {
+      this.metricsEl.parentElement.removeChild(this.metricsEl);
+      this.metricsEl = null;
+    }
     if (this.tooltipEl && this.tooltipEl.parentElement) {
       this.tooltipEl.parentElement.removeChild(this.tooltipEl);
       this.tooltipEl = null;
     }
+    if (this._keydownHandler) {
+      document.removeEventListener("keydown", this._keydownHandler);
+      this._keydownHandler = null;
+    }
+  }
+
+  /** Limpia el resaltado aplicado en el grafo */
+  clearHighlight() {
+    if (!this.cy) return;
+    this.cy.elements().removeClass("faded highlighted");
+  }
+
+  /** Resalta el vecindario del nodo dado */
+  highlightNeighborhood(node) {
+    if (!this.cy) return;
+    const neighborhood = node.closedNeighborhood();
+    this.cy.elements().addClass("faded");
+    neighborhood.removeClass("faded");
+    node.addClass("highlighted");
+    neighborhood.edges().addClass("highlighted");
+  }
+
+  /** Centra y resalta un curso por ID en el grafo */
+  focusNodeByCursoId(cursoId, opts = { highlight: true, openTooltip: false }) {
+    if (!this.cy) return;
+    const node = this.cy.getElementById(`c${cursoId}`);
+    if (!node || node.empty()) return;
+    this.cy.center(node);
+    this.cy.animate({ center: { eles: node }, duration: 200 });
+    if (opts.highlight) this.highlightNeighborhood(node);
   }
 
   /** Exporta el grafo como PNG y dispara la descarga */

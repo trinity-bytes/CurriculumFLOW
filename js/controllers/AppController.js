@@ -15,10 +15,35 @@ class AppController {
     this.cursoSelect = document.getElementById("cursoSelect");
     this.buscarCursoInput = document.getElementById("buscarCursoInput"); // Referencia agregada
     this.searchFeedbackEl = document.getElementById("searchFeedback"); // Referencia agregada
+    if (this.buscarCursoInput) {
+      this.buscarCursoInput.setAttribute('role', 'combobox');
+      this.buscarCursoInput.setAttribute('aria-autocomplete', 'list');
+      // Controla tanto el select como el panel de sugerencias
+      this.buscarCursoInput.setAttribute('aria-controls', 'cursoSelect searchSuggestions');
+      this.buscarCursoInput.setAttribute('aria-haspopup', 'listbox');
+      this.buscarCursoInput.setAttribute('aria-expanded', 'false');
+    }
 
     // Inicializar componentes
     this.inicializarUI();
     this.registrarEventos();
+  }
+
+  _download(filename, content, mime = 'text/plain;charset=utf-8') {
+    try {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('No se pudo descargar el archivo', e);
+      alert('No se pudo descargar el archivo.');
+    }
   }
 
   _deaccentAndLower(str) {
@@ -49,6 +74,7 @@ class AppController {
       // Disparar evento input para re-filtrar/reiniciar las opciones del select mediante la lógica de main.js
       const event = new Event("input", { bubbles: true, cancelable: true });
       this.buscarCursoInput.dispatchEvent(event);
+      this.buscarCursoInput.setAttribute('aria-expanded', 'false');
     }
     if (this.cursoSelect) {
       // No se necesita reinicio directo para el select ya que el evento input en buscarCursoInput maneja el filtrado.
@@ -57,8 +83,11 @@ class AppController {
     }
     if (this.searchFeedbackEl) {
       this.searchFeedbackEl.textContent =
-        "Escriba para filtrar la lista de abajo.";
+        "Escriba y haga clic en Buscar; los resultados aparecen abajo en la lista.";
     }
+    // Ocultar sugerencias si existen
+    const sugg = document.getElementById('searchSuggestions');
+    if (sugg) { sugg.classList.add('d-none'); sugg.innerHTML = ""; }
   }
 
   registrarEventos() {
@@ -125,6 +154,17 @@ class AppController {
       const cursoModalElement = document.getElementById("cursoModal");
       if (cursoModalElement) {
         const cursoModal = bootstrap.Modal.getOrCreateInstance(cursoModalElement);
+        // Guardar el elemento que disparó la apertura para restaurar foco al cerrar
+        const opener = document.activeElement;
+        cursoModalElement.addEventListener('shown.bs.modal', () => {
+          // Enfocar el título o el primer foco interactivo
+          const titleEl = document.getElementById('cursoModalTitle');
+          if (titleEl && typeof titleEl.focus === 'function') titleEl.focus();
+        }, { once: true });
+        cursoModalElement.addEventListener('hidden.bs.modal', () => {
+          // Restaurar foco al disparador original
+          if (opener && typeof opener.focus === 'function') opener.focus();
+        }, { once: true });
         cursoModal.show();
       }
     });
@@ -149,6 +189,14 @@ class AppController {
               if (cursoModalElement) {
                 const cursoModal =
                   bootstrap.Modal.getOrCreateInstance(cursoModalElement);
+                const opener = document.activeElement;
+                cursoModalElement.addEventListener('shown.bs.modal', () => {
+                  const titleEl = document.getElementById('cursoModalTitle');
+                  if (titleEl && typeof titleEl.focus === 'function') titleEl.focus();
+                }, { once: true });
+                cursoModalElement.addEventListener('hidden.bs.modal', () => {
+                  if (opener && typeof opener.focus === 'function') opener.focus();
+                }, { once: true });
                 cursoModal.show();
               } else {
                 console.error("Modal element #cursoModal not found.");
@@ -188,6 +236,28 @@ class AppController {
         this.cursoView.mostrarInformacionCurso(curso, this.curriculum);
       });
 
+    // Ver en Grafo: centra y resalta el curso seleccionado
+    const btnVerEnGrafo = document.getElementById('btnVerEnGrafo');
+    if (btnVerEnGrafo) {
+      btnVerEnGrafo.addEventListener('click', () => {
+        const cursoId = parseInt(this.cursoSelect.value);
+        this.contentTitle.textContent = "Visualización del Grafo de Prerrequisitos";
+        const contentBody = document.getElementById("contentBody");
+        contentBody.innerHTML = "";
+        const card = document.createElement("div");
+        card.className = "mt-3";
+        contentBody.appendChild(card);
+        this.graphView.mostrarGrafo(this.curriculum, card);
+        this.graphView.focusNodeByCursoId(cursoId, { highlight: true });
+      });
+    }
+
+    // Al cambiar selección, si el grafo está abierto, centrar allí
+    this.cursoSelect.addEventListener('change', () => {
+      const cursoId = parseInt(this.cursoSelect.value);
+      if (this.graphView.cy) this.graphView.focusNodeByCursoId(cursoId, { highlight: true });
+    });
+
     // Validación del plan
     const btnValidar = document.getElementById("btnValidarPlan");
     if (btnValidar) {
@@ -224,7 +294,13 @@ class AppController {
           : '<div class="alert alert-danger mb-3"><strong>Alerta:</strong> Se encontraron validaciones fallidas. Revisa los detalles abajo o regenera las relaciones.</div>';
         const html = `
           <div class="card">
-            <div class="card-header">Resumen</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Resumen</span>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Exportar validación">
+                <button id="btnExportValidJson" class="btn btn-light text-dark" title="Descargar JSON"><i class="bi bi-filetype-json me-1"></i>JSON</button>
+                <button id="btnExportValidCsv" class="btn btn-light text-dark" title="Descargar CSV"><i class="bi bi-filetype-csv me-1"></i>CSV</button>
+              </div>
+            </div>
             <div class="card-body">
               ${banner}
               <div class="mb-2">${metricsHtml}</div>
@@ -232,6 +308,38 @@ class AppController {
             </div>
           </div>`;
         document.getElementById("contentBody").innerHTML = html;
+
+        // Exportar JSON de validación
+        const btnJ = document.getElementById('btnExportValidJson');
+        if (btnJ) btnJ.addEventListener('click', () => {
+          const content = JSON.stringify(rep, null, 2);
+          this._download('validacion_plan.json', content, 'application/json');
+        });
+        // Exportar CSV de validación
+        const btnC = document.getElementById('btnExportValidCsv');
+        if (btnC) btnC.addEventListener('click', () => {
+          // Sección métricas
+          const metricsLines = [
+            'metrica,valor',
+            `totalCursos,${rep.metrics.totalCursos}`,
+            `ciclos,${rep.metrics.ciclos}`,
+            `aristas,${rep.metrics.aristas}`,
+            `maxPrereqs,${rep.metrics.maxPrereqs}`,
+            `maxOut,${rep.metrics.maxOut}`
+          ];
+          // Sección checks
+          const checksHeader = ['', '']; // separador visual
+          const checksLines = ['nombre,ok,detalles'].concat(
+            rep.checks.map(c => {
+              const name = '"' + (c.name || '').replace(/"/g, '""') + '"';
+              const ok = c.ok ? 'OK' : 'Falla';
+              const det = '"' + (c.details || '').replace(/"/g, '""') + '"';
+              return `${name},${ok},${det}`;
+            })
+          );
+          const csv = metricsLines.concat(checksHeader, checksLines).join('\r\n');
+          this._download('validacion_plan.csv', csv, 'text/csv;charset=utf-8');
+        });
       });
     }
 
@@ -283,7 +391,12 @@ class AppController {
           .join("");
         const html = `
           <div class="card">
-            <div class="card-header">Secuencia válida (prerrequisitos antes que sus dependientes)</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Secuencia válida (prerrequisitos antes que sus dependientes)</span>
+                 <button id="btnExportTopoCsv" class="btn btn-sm btn-light text-dark" title="Descargar CSV">
+                <i class="bi bi-filetype-csv me-1"></i>Exportar CSV
+              </button>
+            </div>
             <div class="card-body">
               <ol class="list-group list-group-numbered">
                 ${items}
@@ -291,6 +404,20 @@ class AppController {
             </div>
           </div>`;
         document.getElementById("contentBody").innerHTML = html;
+
+        // Exportar CSV del orden topológico
+        const btnExp = document.getElementById('btnExportTopoCsv');
+        if (btnExp) btnExp.addEventListener('click', () => {
+          const header = 'orden,id,nombre,ciclo';
+          const lines = orden.map((id, idx) => {
+            const curso = this.curriculum.obtenerCursoPorId(id);
+            const nombre = '"' + (curso?.nombre || '').replace(/"/g, '""') + '"';
+            const ciclo = curso?.ciclo ?? '';
+            return `${idx + 1},${id},${nombre},${ciclo}`;
+          });
+          const csv = [header].concat(lines).join('\r\n');
+          this._download('orden_topologico.csv', csv, 'text/csv;charset=utf-8');
+        });
       });
     }
   }

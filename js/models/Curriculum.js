@@ -291,4 +291,91 @@ class Curriculum {
     const ok = checks.every((c) => c.ok);
     return { ok, checks, metrics };
   }
+
+  /**
+   * Devuelve las aristas del DAG como pares [u, v] con u=prerrequisito -> v=curso.
+   * @returns {Array<[number, number]>}
+   */
+  obtenerAristas() {
+    const edges = [];
+    this.cursos.forEach((cursoDestino) => {
+      cursoDestino.cursosPrerequisito.forEach((pre) => {
+        edges.push([pre, cursoDestino.id]);
+      });
+    });
+    return edges;
+  }
+
+  /**
+   * Calcula la reducción transitiva (Diagrama de Hasse) del DAG actual.
+   * Elimina toda arista u->v si existe un camino alterno u => v de longitud >= 2.
+   * @returns {Array<[number, number]>} Aristas que permanecen en el Hasse (relaciones de cobertura)
+   */
+  hasseAristas() {
+    const edges = this.obtenerAristas();
+    // Construir lista de adyacencia
+    const adj = new Map();
+    for (let i = 1; i <= this.TOTAL_CURSOS; i++) adj.set(i, []);
+    edges.forEach(([u, v]) => adj.get(u).push(v));
+
+    const keep = [];
+    // Para cada arista u->v, verificar si hay camino alterno u=>v sin usar esa arista directa
+    for (const [u, v] of edges) {
+      const q = [u];
+      const seen = new Array(this.TOTAL_CURSOS + 1).fill(false);
+      seen[u] = true;
+      let reachableAlt = false;
+      while (q.length && !reachableAlt) {
+        const x = q.shift();
+        for (const y of adj.get(x)) {
+          // Omitir explícitamente la arista directa u->v
+          if (x === u && y === v) continue;
+          if (!seen[y]) {
+            seen[y] = true;
+            if (y === v) {
+              reachableAlt = true;
+              break;
+            }
+            q.push(y);
+          }
+        }
+      }
+      if (!reachableAlt) keep.push([u, v]);
+    }
+    return keep;
+  }
+
+  /**
+   * Métricas básicas del poset.
+   * @returns {{minimos:number[], maximos:number[], altura:number}}
+   */
+  calcularMetricasPoset() {
+    const edges = this.obtenerAristas();
+    const indeg = new Array(this.TOTAL_CURSOS + 1).fill(0);
+    const adj = new Map();
+    for (let i = 1; i <= this.TOTAL_CURSOS; i++) adj.set(i, []);
+    edges.forEach(([u, v]) => {
+      adj.get(u).push(v);
+      indeg[v]++;
+    });
+    const minimos = [];
+    const maximos = [];
+    for (let i = 1; i <= this.TOTAL_CURSOS; i++) {
+      if (indeg[i] === 0) minimos.push(i);
+      if ((adj.get(i) || []).length === 0) maximos.push(i);
+    }
+    // Altura = longitud del camino más largo (en número de nodos) en el DAG
+    // DP sobre orden topológico
+    const topo = this.ordenarCursosTopologicamente();
+    const dp = new Array(this.TOTAL_CURSOS + 1).fill(0);
+    // En altura por nodos, un mínimo parte con 1
+    for (const u of topo) {
+      if (dp[u] === 0) dp[u] = 1;
+      for (const v of adj.get(u)) {
+        dp[v] = Math.max(dp[v], dp[u] + 1);
+      }
+    }
+    const altura = Math.max(...dp);
+    return { minimos, maximos, altura };
+  }
 }

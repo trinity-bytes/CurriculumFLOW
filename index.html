@@ -28,6 +28,19 @@ Problema propuesto:
       name="description"
       content="Plataforma avanzada para la gestión y visualización de prerrequisitos académicos basada en relaciones de orden parcial"
     />
+  <!-- Open Graph / Twitter: Social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CurriculumFlow" />
+  <meta property="og:title" content="CurriculumFlow — Gestión de Prerrequisitos y Posets" />
+  <meta property="og:description" content="Explora el grafo de prerrequisitos, Hasse, carriles por ciclo, orden topológico y exportaciones CSV/JSON. Semillas reproducibles y demo en vivo." />
+  <meta property="og:url" content="https://trinity-bytes.github.io/CurriculumFLOW/" />
+  <meta property="og:image" content="https://trinity-bytes.github.io/CurriculumFLOW/assets/screenshots/01-home-dashboard.png" />
+  <meta property="og:image:alt" content="Vista principal de CurriculumFlow con panel de control y resumen" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CurriculumFlow — Gestión de Prerrequisitos y Posets" />
+  <meta name="twitter:description" content="Grafo interactivo, Hasse, carriles, orden topológico y exportaciones. Demo en GitHub Pages." />
+  <meta name="twitter:image" content="https://trinity-bytes.github.io/CurriculumFLOW/assets/screenshots/01-home-dashboard.png" />
+  <meta name="theme-color" content="#2A6EB8" />
     <!-- Google Fonts: Montserrat & Inter -->
     <link rel="stylesheet" href="assets/fonts/local-google-fonts.css" />
 
@@ -160,18 +173,28 @@ Problema propuesto:
                   <i class="bi bi-search me-1"></i>
                   Buscar Curso:
                 </label>
-                <div
-                  id="searchFeedback"
-                  class="form-text text-muted mt-1"
-                  style="min-height: 1.2em"
-                ></div>
-                <!-- Added for search feedback -->
-                <input
-                  type="text"
-                  id="buscarCursoInput"
-                  class="form-control mb-3"
-                  placeholder="Buscar por nombre, ID o palabra clave..."
-                />
+                <div id="searchFeedback" class="form-text text-muted mt-1" style="min-height: 1.2em" aria-live="polite" aria-atomic="true"></div>
+                <!-- Buscador con acciones -->
+                <div class="input-group mb-2">
+                  <input
+                    type="text"
+                    id="buscarCursoInput"
+                    class="form-control"
+                    placeholder="Buscar por nombre, ID o palabra clave..."
+                    aria-label="Buscar curso"
+                    aria-describedby="searchFeedback searchShortcutsHint"
+                  />
+                  <button class="btn btn-outline-primary" id="btnBuscarCurso" type="button">
+                    <i class="bi bi-search"></i>
+                    Buscar
+                  </button>
+                  <button class="btn btn-outline-secondary" id="btnLimpiarBusqueda" type="button" title="Limpiar">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+                <!-- Sugerencias dinámicas -->
+                <div id="searchSuggestions" class="list-group d-none" role="listbox" aria-label="Sugerencias de cursos"></div>
+                <small id="searchShortcutsHint" class="text-muted">Atajos: Enter = Buscar • ↓ = Navegar sugerencias • Esc = Cerrar</small>
 
                 <label for="cursoSelect" class="form-label fw-semibold">
                   <i class="bi bi-binoculars me-1"></i>
@@ -179,13 +202,16 @@ Problema propuesto:
                 </label>
 
                 <select id="cursoSelect" class="form-select"></select>
-                <button
-                  id="btnConsultarCurso"
-                  class="btn btn-secondary w-100 mt-2"
-                >
-                  <i class="bi bi-info-circle me-2"></i>
-                  Consultar Detalles
-                </button>
+                <div class="d-grid gap-2 mt-2">
+                  <button id="btnConsultarCurso" class="btn btn-secondary">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Consultar Detalles
+                  </button>
+                  <button id="btnVerEnGrafo" class="btn btn-outline-info" aria-describedby="searchFeedback">
+                    <i class="bi bi-crosshair me-2"></i>
+                    Ver en Grafo
+                  </button>
+                </div>
               </div>
               <!-- End of Combined Query and Search Section -->
 
@@ -241,7 +267,7 @@ Problema propuesto:
   <!-- Contenedor estático removido para evitar IDs duplicados de #cy -->
 
     <!-- Modal para detalles de curso -->
-    <div class="modal fade" id="cursoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="cursoModal" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cursoModalTitle" aria-describedby="cursoModalBody">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
