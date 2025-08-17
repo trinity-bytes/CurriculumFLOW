@@ -1,6 +1,4 @@
-# CurriculumFlow
-
-![CurriculumFlow Logo](assets/imgs/logo-isotipo.png)
+# <img src="assets/imgs/logo-isotipo.png" alt="CurriculumFLOW" width="36" style="vertical-align: text-bottom; margin-right: 6px;"> CurriculumFLOW
 
 ## Optimiza las rutas académicas, maximiza el potencial
 
